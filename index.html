@@ -55,6 +55,11 @@ label input,label select{margin-top:4px}
 .tbl th,.tbl td{padding:10px 8px;border-bottom:1px solid var(--bd);text-align:right}
 .tbl th:first-child,.tbl td:first-child{text-align:left}.tbl th{font-size:12px;color:var(--mu);font-weight:600}
 .tag{background:var(--soft);border:1px solid var(--bd);border-radius:20px;font-size:11.5px;padding:1px 8px;color:var(--mu)}
+.tip{background:#fff8e6;border:1px solid #f5d98a;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:14px}
+.how{font-size:13px;color:var(--mu);background:var(--soft);border-left:3px solid var(--ye);padding:8px 10px;margin:12px 0 0;border-radius:4px}
+.hint{display:block;font-weight:400;font-size:12px;color:#8a919b;margin-top:1px}
+.steps{margin:0;padding-left:20px}.steps li{margin-bottom:8px}
+dl{margin:0}dt{font-weight:700;margin-top:10px}dd{margin:2px 0 0;color:var(--mu);font-size:14px}
 footer{max-width:1040px;margin:0 auto;padding:6px 16px 32px;color:var(--mu);font-size:12.5px}
 @media(max-width:600px){h1{font-size:22px}.g-h{grid-template-columns:1fr 38px 38px}.g-h select{grid-column:1/-1;grid-row:2}.big{font-size:29px}}
 @media print{.kpis,nav,footer,.noprint{display:none}body{background:#fff}.card{box-shadow:none}}
@@ -69,6 +74,7 @@ footer{max-width:1040px;margin:0 auto;padding:6px 16px 32px;color:var(--mu);font
 <div class="kpi"><small>Custo fixo por venda</small><b data-o="fu"></b></div>
 </div></div></header>
 <nav><div class="w tabs">
+<button data-a="tab" data-i="help">Como usar</button>
 <button data-a="tab" data-i="sum">Resumo</button>
 <button data-a="tab" data-i="prod">Produtos e preços</button>
 <button data-a="tab" data-i="ing">Ingredientes</button>
@@ -109,49 +115,72 @@ function def(){
 }
 let S;try{S=JSON.parse(localStorage.getItem('pb2'))}catch(e){}
 if(!S||!S.prods)S=def();
-let tab='sum';
+let tab='help';try{if(localStorage.getItem('pb2'))tab='sum'}catch(e){}
 const save=()=>{try{localStorage.setItem('pb2',JSON.stringify(S))}catch(e){}};
 
 const I=(p,v,s)=>s?`<input data-p="${p}" data-t="s" value="${esc(v)}">`:`<input data-p="${p}" type="number" step="any" min="0" inputmode="decimal" value="${v}">`;
 const O=(v,t,s)=>`<option value="${esc(v)}"${v===s?' selected':''}>${esc(t)}</option>`;
 const opts=(sel,self)=>'<optgroup label="Ingredientes">'+S.ing.map(i=>O('i:'+i.id,`${i.n} (${i.u})`,sel)).join('')+'</optgroup><optgroup label="Produtos prontos">'+S.prods.filter(x=>x.id!==self).map(x=>O('p:'+x.id,x.n+' (un)',sel)).join('')+'</optgroup>';
 
+const TIP={
+prod:'<div class="tip"><b>Como usar esta tela</b><br>1. Dê um nome ao produto e escolha o tipo. 2. Monte a receita com os ingredientes e as quantidades de <u>uma</u> unidade. 3. Defina a margem de lucro que você quer. 4. Leia o preço sugerido. Para combos e promoções, adicione outros produtos da lista como itens.</div>',
+ing:'<div class="tip"><b>Para que serve</b><br>Aqui você cadastra o que compra. Quando o preço de um ingrediente mudar, atualize só aqui: todos os produtos são recalculados sozinhos.</div>',
+fix:'<div class="tip"><b>Para que serve</b><br>São as contas que chegam todo mês, mesmo sem vender. A calculadora divide o total pelo número de vendas e coloca uma parte em cada produto. Assim aluguel, gás, energia e água já estão dentro do preço.</div>',
+tax:'<div class="tip"><b>Para que serve</b><br>Imposto e taxa da maquininha são cobrados sobre o preço de venda, por isso entram no cálculo do preço e não só do custo. Já deixei tudo preenchido: confira e ajuste se precisar.</div>'};
+function vHelp(){
+ return `<div class="card"><h3>Como funciona (leva 5 minutos)</h3><p class="mu">Siga a ordem das abas. Tudo é calculado sozinho e salvo no seu navegador.</p>
+ <ol class="steps"><li><b>Ingredientes:</b> cadastre tudo que você compra, com o preço pago e a quantidade da embalagem. Exemplo: blend bovino, R$ 38 por 1000 g.</li>
+ <li><b>Custos fixos:</b> lance o que paga todo mês (aluguel, gás, energia, água, equipe) e informe quantas vendas faz por mês.</li>
+ <li><b>Impostos e maquininha:</b> já vem preenchido com o Simples Nacional (4%). Confira a taxa da sua maquininha e como seus clientes pagam.</li>
+ <li><b>Produtos e preços:</b> monte a receita de cada lanche, combo, promoção ou porção, escolha a margem de lucro e veja o preço sugerido.</li>
+ <li><b>Resumo:</b> veja a tabela final de preços, imprima e compare com o que você cobra hoje.</li></ol></div>
+ <div class="card"><h3>Por que não basta somar o custo e a margem?</h3><p class="mu" style="margin:0">Porque imposto e taxa da maquininha são descontados do preço de venda, não do custo. Se você cobrar só custo + 30%, uma parte desse lucro vai embora nas taxas. Aqui o cálculo já considera isso e garante o lucro que você escolheu.</p></div>
+ <div class="card"><h3>Dicionário rápido</h3><dl>
+ <dt>Custo do produto</dt><dd>Quanto custa fazer 1 unidade: ingredientes (com as perdas) mais embalagem.</dd>
+ <dt>Custo fixo por venda (rateio)</dt><dd>As contas do mês divididas pelo número de vendas. Cada lanche paga a sua parte do aluguel, gás, energia e água.</dd>
+ <dt>Margem de lucro</dt><dd>Quanto sobra de lucro em cada R$ 100 vendidos, depois de pagar tudo. Margem de 30% num lanche de R$ 30 deixa R$ 9 de lucro.</dd>
+ <dt>Perdas e desperdício</dt><dd>Sobras, erros e itens que estragam. É um percentual somado ao custo dos ingredientes.</dd>
+ <dt>Imposto</dt><dd>Percentual do preço que vai para o governo. Aqui usamos o Simples Nacional, Anexo I.</dd>
+ <dt>Taxa da maquininha</dt><dd>Percentual que a operadora desconta de cada venda no cartão ou PIX. A calculadora usa a média, de acordo com a forma de pagamento dos clientes.</dd>
+ <dt>Combo e promoção</dt><dd>Usam outros produtos como itens. O custo é a soma dos custos de cada parte.</dd>
+ <dt>Ponto de equilíbrio</dt><dd>O faturamento mínimo para pagar todas as contas do mês, sem lucro e sem prejuízo. Acima dele, começa o lucro.</dd></dl></div>`;
+}
 function vProd(){
- return S.prods.map((p,n)=>`<div class="card">
+ return TIP.prod+S.prods.map((p,n)=>`<div class="card">
  <div class="row g-h">${I(`prods.${n}.n`,p.n,1).replace('<input','<input class="name"')}
  <select data-p="prods.${n}.t" data-t="s">${TYPES.map(t=>O(t,t,p.t)).join('')}</select>
  <button class="x" data-a="cp" data-i="${n}" title="Duplicar produto">⧉</button><button class="x" data-a="dp" data-i="${n}" title="Remover produto">✕</button></div>
- <p class="mu">Receita: escolha os ingredientes (ou outros produtos, para montar combos e promoções) e a quantidade.</p>
+ <p class="mu">Receita de 1 unidade: escolha o item e a quantidade (em g, ml ou un., como aparece ao lado do nome). Para combos e promoções, escolha outros produtos da lista.</p>
  ${p.l.map((l,j)=>`<div class="row g-l"><select data-p="prods.${n}.l.${j}.r" data-t="s">${opts(l.r,p.id)}</select>${I(`prods.${n}.l.${j}.q`,l.q)}<button class="x" data-a="dl" data-i="${n}" data-j="${j}" title="Remover item">✕</button></div>`).join('')}
  <button class="ghost" data-a="al" data-i="${n}">+ Adicionar item à receita</button>
- <div class="row g-3"><label>Embalagem e extras (R$)${I(`prods.${n}.e`,p.e)}</label><label>Margem de lucro desejada (% do preço)${I(`prods.${n}.m`,p.m)}</label><label>Preço que você cobra hoje (R$, opcional)${I(`prods.${n}.pp`,p.pp)}</label></div>
+ <div class="row g-3"><label>Embalagem e extras (R$)<span class="hint">Caixa, papel, guardanapo, sachês</span>${I(`prods.${n}.e`,p.e)}</label><label>Margem de lucro desejada (%)<span class="hint">Ex.: 30 = de cada R$ 100 vendidos, R$ 30 é lucro</span>${I(`prods.${n}.m`,p.m)}</label><label>Preço que você cobra hoje (R$, opcional)<span class="hint">Preencha para ver seu lucro real</span>${I(`prods.${n}.pp`,p.pp)}</label></div>
  <div class="sug"><div><small>Preço sugerido</small><div class="big" data-o="pr${n}"></div></div><div><small>Arredondado (final 0,90)</small><div class="big rd" data-o="rd${n}"></div></div></div>
- <div class="stats"><div class="st"><small>Custo dos ingredientes</small><b data-o="c${n}"></b></div><div class="st"><small>Custo fixo rateado</small><b data-o="f${n}"></b></div><div class="st"><small>Imposto</small><b data-o="x${n}"></b></div><div class="st"><small>Maquininha/app</small><b data-o="m${n}"></b></div><div class="st"><small>Lucro por venda</small><b data-o="l${n}"></b></div></div>
+ <p class="how" data-o="ex${n}"></p><div class="stats"><div class="st"><small>Custo (ingredientes + embalagem)</small><b data-o="c${n}"></b></div><div class="st"><small>Custo fixo rateado</small><b data-o="f${n}"></b></div><div class="st"><small>Imposto</small><b data-o="x${n}"></b></div><div class="st"><small>Maquininha/app</small><b data-o="m${n}"></b></div><div class="st"><small>Lucro por venda</small><b data-o="l${n}"></b></div></div>
  <div id="rl${n}" class="small"></div></div>`).join('')+'<button class="btn" data-a="ap">+ Novo produto, combo ou promoção</button>';
 }
 function vSum(){
- return `<div class="card"><div class="hrow"><h3>Tabela de preços</h3><button class="ghost noprint" data-a="pr">Imprimir</button></div><p class="mu">Preço sugerido de cada item, com margem, impostos e taxas já incluídos.</p>
+ return `<div class="card"><div class="hrow"><h3>Tabela de preços</h3><button class="ghost noprint" data-a="pr">Imprimir</button></div><p class="mu"><b>Preço sugerido:</b> o mínimo para você ter a margem escolhida. <b>Arredondado:</b> valor pronto para o cardápio, com final ,90. <b>Lucro no arredondado:</b> quanto sobra em cada venda nesse preço, depois de custos, imposto e taxas. Em vermelho, significa prejuízo.</p>
  <div class="sc"><table class="tbl"><thead><tr><th>Produto</th><th>Custo total</th><th>Preço sugerido</th><th>Arredondado</th><th>Lucro no arredondado</th></tr></thead><tbody id="sumtbl"></tbody></table></div></div>
  <div class="card"><h3>Saúde financeira do mês</h3><p class="mu">Estimativa com a média dos seus produtos e as vendas mensais informadas em Custos fixos.</p>
- <div class="stats"><div class="st"><small>Faturamento mínimo (ponto de equilíbrio)</small><b data-o="be"></b></div><div class="st"><small>Mínimo por dia</small><b data-o="bed"></b></div><div class="st"><small>Faturamento previsto</small><b data-o="rev"></b></div><div class="st"><small>Lucro mensal estimado</small><b data-o="pf"></b></div></div></div>`;
+ <div class="stats"><div class="st"><small>Faturamento mínimo (ponto de equilíbrio)</small><b data-o="be"></b></div><div class="st"><small>Mínimo por dia</small><b data-o="bed"></b></div><div class="st"><small>Faturamento previsto</small><b data-o="rev"></b></div><div class="st"><small>Lucro mensal estimado</small><b data-o="pf"></b></div></div><p class="mu" style="margin:12px 0 0">Ponto de equilíbrio é o quanto você precisa vender no mês só para pagar todas as contas. Acima disso, começa o lucro.</p></div>`;
 }
 function vIng(){
- return `<div class="card"><h3>Ingredientes e insumos</h3><p class="mu">Informe o preço que você paga pela embalagem e o que vem nela. O custo por unidade é calculado sozinho.</p>
+ return TIP.ing+`<div class="card"><h3>Ingredientes e insumos</h3><p class="mu">Informe o preço que você paga pela embalagem e o que vem nela. Exemplo: pacote de bacon de 1 kg por R$ 42 → preço 42, quantidade 1000, unidade g. O custo por unidade é calculado sozinho.</p>
  <div class="sc"><div class="row g-ing hd"><span>Nome</span><span>Preço pago (R$)</span><span>Qtd. na embalagem</span><span>Unid.</span><span>Custo por unid.</span><span></span></div>
  ${S.ing.map((i,n)=>`<div class="row g-ing">${I(`ing.${n}.n`,i.n,1)}${I(`ing.${n}.p`,i.p)}${I(`ing.${n}.q`,i.q)}<select data-p="ing.${n}.u" data-t="s">${UN.map(u=>O(u,u,i.u)).join('')}</select><b data-o="ic${n}"></b><button class="x" data-a="di" data-i="${n}" title="Remover">✕</button></div>`).join('')}</div>
  <button class="ghost" data-a="ai">+ Novo ingrediente</button></div>`;
 }
 function vFix(){
- return `<div class="card"><h3>Custos fixos mensais</h3><p class="mu">Tudo que você paga todo mês, vendendo ou não: aluguel, gás, energia, água, equipe e outros.</p>
+ return TIP.fix+`<div class="card"><h3>Custos fixos mensais</h3><p class="mu">Tudo que você paga todo mês, vendendo ou não: aluguel, gás, energia, água, equipe e outros.</p>
  ${S.fixed.map((f,n)=>`<div class="row g-f">${I(`fixed.${n}.n`,f.n,1)}${I(`fixed.${n}.v`,f.v)}<button class="x" data-a="df" data-i="${n}" title="Remover">✕</button></div>`).join('')}
  <button class="ghost" data-a="af">+ Novo custo</button>
  <div class="tot"><span>Total por mês</span><span data-o="tf"></span></div></div>
  <div class="card"><h3>Rateio e perdas</h3><p class="mu">Quanto maior o volume de vendas, menor o custo fixo embutido em cada produto.</p>
- <div class="row g-3"><label>Vendas estimadas por mês (nº de itens/pedidos)${I('vol',S.vol)}</label><label>Perdas e desperdício (% sobre ingredientes)${I('waste',S.waste||0)}</label><div class="st"><small>Custo fixo por venda</small><b data-o="fu"></b></div></div></div>`;
+ <div class="row g-3"><label>Vendas estimadas por mês (nº de itens)<span class="hint">Não sabe? Estime a média por dia × 30</span>${I('vol',S.vol)}</label><label>Perdas e desperdício (%)<span class="hint">Ex.: 3 = a cada R$ 100 de ingredientes, R$ 3 se perdem</span>${I('waste',S.waste||0)}</label><div class="st"><small>Custo fixo por venda</small><b data-o="fu"></b></div></div></div>`;
 }
 function vTax(){
- return `<div class="card"><h3>Impostos</h3><p class="mu">Alíquotas nominais do Simples Nacional, Anexo I (restaurantes e lanchonetes), já preenchidas. A alíquota efetiva pode ser menor, conforme seu faturamento dos últimos 12 meses. Confirme com seu contador.</p>
- <div class="row g-3"><label>Regime e faixa<select data-a="reg">${TX.map((t,i)=>`<option value="${i}"${i===S.tax.i?' selected':''}>${esc(t[0])}</option>`).join('')}</select></label><label>Alíquota aplicada (%)${I('tax.rate',S.tax.rate)}</label></div></div>
+ return TIP.tax+`<div class="card"><h3>Impostos</h3><p class="mu">Alíquotas nominais do Simples Nacional, Anexo I (restaurantes e lanchonetes), já preenchidas. A alíquota efetiva pode ser menor, conforme seu faturamento dos últimos 12 meses. Confirme com seu contador.</p>
+ <div class="row g-3"><label>Regime e faixa<select data-a="reg">${TX.map((t,i)=>`<option value="${i}"${i===S.tax.i?' selected':''}>${esc(t[0])}</option>`).join('')}</select></label><label>Alíquota aplicada (%)<span class="hint">Já preenchida. Só mude se seu contador informar outra</span>${I('tax.rate',S.tax.rate)}</label></div></div>
  <div class="card"><h3>Maquininha e formas de pagamento</h3><p class="mu">Informe a taxa da sua maquininha e quanto das vendas vem de cada forma de pagamento. A calculadora usa a taxa média ponderada.</p>
  <div class="row g-p hd"><span>Forma</span><span>% das vendas</span><span>Taxa (%)</span></div>
  ${S.pay.map((p,n)=>`<div class="row g-p"><b>${p.n}</b>${I(`pay.${n}.s`,p.s)}${I(`pay.${n}.f`,p.f)}</div>`).join('')}
@@ -162,7 +191,7 @@ function vTax(){
 }
 function render(){
  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.i===tab));
- $('#main').innerHTML=({sum:vSum,prod:vProd,ing:vIng,fix:vFix,tax:vTax})[tab]();
+ $('#main').innerHTML=({help:vHelp,sum:vSum,prod:vProd,ing:vIng,fix:vFix,tax:vTax})[tab]();
  calc();
 }
 function calc(){
@@ -179,7 +208,7 @@ function calc(){
  S.prods.forEach((p,n)=>{
   const c=cm(p,0),cost=c+fu,d=100-vr-p.m,price=d>0?cost/(d/100):NaN;
   const rd=rnd(price),lr=rd*(1-vr/100)-cost;
-  Object.assign(V,{['c'+n]:R(c),['f'+n]:R(fu),['pr'+n]:R(price),['x'+n]:R(price*S.tax.rate/100),['m'+n]:R(price*(pay+S.app)/100),['l'+n]:R(price*p.m/100),['rd'+n]:R(rd)});
+  Object.assign(V,{['c'+n]:R(c),['f'+n]:R(fu),['pr'+n]:R(price),['x'+n]:R(price*S.tax.rate/100),['m'+n]:R(price*(pay+S.app)/100),['l'+n]:R(price*p.m/100),['rd'+n]:R(rd),['ex'+n]:d>0?`Como chegamos ao preço: custo total de ${R(cost)} (ingredientes, embalagem e parte das contas fixas) ÷ ${P(d)} = ${R(price)}. Os ${P(d)} são o que resta do preço depois de tirar ${P(S.tax.rate)} de imposto, ${P(pay+S.app)} de maquininha e apps, e ${P(p.m)} de lucro.`:''});
   if(price>0){nv++;sc+=c/price;sp+=price}
   rows+=`<tr><td>${esc(p.n)} <span class="tag">${p.t}</span></td><td>${R(cost)}</td><td>${R(price)}</td><td><b>${R(rd)}</b></td><td class="${lr>=0?'ok':'warn'}">${R(lr)}</td></tr>`;
   const e=document.getElementById('rl'+n);
