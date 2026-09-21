@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex"><meta name="theme-color" content="#14171a">
+<title>Calculadora Prime Burger's</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--tx:#16191d;--mu:#667085;--bd:#e4e7ec;--ac:#d62d20;--ye:#ffb400;--ok:#12805c;--bad:#c0281c;--soft:#f7f8fa;--sh:0 1px 2px rgba(16,24,40,.06),0 4px 14px rgba(16,24,40,.05)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:#14171a;color:#fff;border-bottom:4px solid var(--ye)}
+.w{max-width:1040px;margin:0 auto;padding:0 16px}
+.top{display:flex;align-items:center;gap:14px;padding:18px 0 14px}
+.logo{flex:none;width:50px;height:50px;border-radius:12px;background:var(--ac);display:grid;place-items:center;font-size:27px;box-shadow:0 0 0 3px rgba(255,180,0,.35)}
+h1{margin:0;font:700 27px/1.1 Oswald,Impact,sans-serif;letter-spacing:.6px}
+.top p{margin:3px 0 0;font-size:13px;color:#b8bec6}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding-bottom:16px}
+.kpi{background:#1f2429;border:1px solid #2c333a;border-radius:10px;padding:9px 12px}
+.kpi small{display:block;color:#9aa3ad;font-size:12px}.kpi b{font:600 19px Oswald,sans-serif;letter-spacing:.3px;color:var(--ye)}
+nav{background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.tabs{display:flex;overflow-x:auto}
+nav button{flex:none;border:0;background:none;color:var(--mu);padding:14px 16px;font:600 14px Inter,sans-serif;cursor:pointer;border-bottom:3px solid transparent}
+nav button.on{color:var(--tx);border-bottom-color:var(--ac)}
+main{padding-top:18px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(255,180,0,.6);outline-offset:1px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:var(--sh)}
+h3{margin:0 0 4px;font:700 20px Oswald,Impact,sans-serif;letter-spacing:.4px}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.mu{color:var(--mu);font-size:13px;margin:0 0 12px}
+input,select{background:#fff;color:var(--tx);border:1px solid #d0d5dd;border-radius:8px;padding:9px 10px;font:inherit;width:100%;min-width:0}
+input:focus,select:focus{border-color:var(--ac)}
+label{display:block;font-size:12.5px;color:var(--mu);font-weight:500}
+label input,label select{margin-top:4px}
+.row{display:grid;gap:8px;align-items:center;margin-bottom:8px}
+.g-h{grid-template-columns:1fr 150px 38px 38px}.g-l{grid-template-columns:1fr 110px 38px}.g-3{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));align-items:end}
+.g-f{grid-template-columns:1fr 150px 38px}.g-ing{grid-template-columns:2fr 1fr 1fr 80px 1.3fr 38px;min-width:660px}.g-p{grid-template-columns:1fr 110px 110px}
+.hd{font-size:12px;color:var(--mu);font-weight:600}.sc{overflow-x:auto}
+.x{background:#fff;border:1px solid #d0d5dd;color:var(--mu);border-radius:8px;height:38px;cursor:pointer}
+.x:hover{color:var(--bad);border-color:var(--bad)}
+.ghost{background:#fff;border:1px solid #d0d5dd;color:var(--tx);border-radius:8px;padding:8px 13px;font:600 13.5px Inter,sans-serif;cursor:pointer;margin:2px 0 12px}
+.ghost:hover{border-color:var(--tx)}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:12px 20px;font:600 14.5px Inter,sans-serif;cursor:pointer;box-shadow:var(--sh)}
+.btn:hover{background:#b3241a}
+.name{font-weight:700;font-size:16px}
+.sug{display:flex;flex-wrap:wrap;gap:28px;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)}
+.sug small{color:var(--mu);font-size:12.5px}
+.big{font:700 34px/1.1 Oswald,Impact,sans-serif;color:var(--ac)}.rd{color:var(--ok)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:12px}
+.st{background:var(--soft);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}.st small{display:block;color:var(--mu);font-size:12px}.st b{font-size:16px}
+.small{font-size:13px;margin-top:8px}.ok{color:var(--ok)}.warn{color:var(--bad)}
+.tot{display:flex;justify-content:space-between;padding:10px 0 0;border-top:1px solid var(--bd);font-weight:700}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+.tbl th,.tbl td{padding:10px 8px;border-bottom:1px solid var(--bd);text-align:right}
+.tbl th:first-child,.tbl td:first-child{text-align:left}.tbl th{font-size:12px;color:var(--mu);font-weight:600}
+.tag{background:var(--soft);border:1px solid var(--bd);border-radius:20px;font-size:11.5px;padding:1px 8px;color:var(--mu)}
+footer{max-width:1040px;margin:0 auto;padding:6px 16px 32px;color:var(--mu);font-size:12.5px}
+@media(max-width:600px){h1{font-size:22px}.g-h{grid-template-columns:1fr 38px 38px}.g-h select{grid-column:1/-1;grid-row:2}.big{font-size:29px}}
+@media print{.kpis,nav,footer,.noprint{display:none}body{background:#fff}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<header><div class="w"><div class="top"><div class="logo">🍔</div><div><h1>Calculadora Prime Burger's</h1><p>Precificação profissional: custos, impostos e taxas em um só lugar</p></div></div>
+<div class="kpis">
+<div class="kpi"><small>Imposto sobre vendas</small><b data-o="tx"></b></div>
+<div class="kpi"><small>Taxa média da maquininha</small><b data-o="pay"></b></div>
+<div class="kpi"><small>Custos fixos por mês</small><b data-o="tf"></b></div>
+<div class="kpi"><small>Custo fixo por venda</small><b data-o="fu"></b></div>
+</div></div></header>
+<nav><div class="w tabs">
+<button data-a="tab" data-i="sum">Resumo</button>
+<button data-a="tab" data-i="prod">Produtos e preços</button>
+<button data-a="tab" data-i="ing">Ingredientes</button>
+<button data-a="tab" data-i="fix">Custos fixos</button>
+<button data-a="tab" data-i="tax">Impostos e maquininha</button>
+</div></nav>
+<main class="w" id="main"></main>
+<footer>Seus dados ficam salvos neste navegador. Valores iniciais são exemplos: troque pelos seus. Estimativa para precificação, não substitui orientação do seu contador.
+<br><button class="ghost" data-a="rs" style="margin-top:10px">Restaurar dados de exemplo</button></footer>
+
+<script>
+const $=s=>document.querySelector(s);
+const R=v=>isFinite(v)?v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):'—';
+const P=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
+const U=v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,8);
+const TX=[['MEI (paga DAS fixo, sem % sobre a venda)',0],['Simples Nacional, Anexo I: 1ª faixa (até R$ 180 mil/ano)',4],['Simples Nacional, Anexo I: 2ª faixa (até R$ 360 mil/ano)',7.3],['Simples Nacional, Anexo I: 3ª faixa (até R$ 720 mil/ano)',9.5],['Simples Nacional, Anexo I: 4ª faixa (até R$ 1,8 mi/ano)',10.7],['Simples Nacional, Anexo I: 5ª faixa (até R$ 3,6 mi/ano)',14.3],['Simples Nacional, Anexo I: 6ª faixa (até R$ 4,8 mi/ano)',19],['Outro regime (digite a alíquota)',null]];
+const TYPES=['Hambúrguer','Combo','Promoção','Porção','Bebida','Sobremesa','Outro'];
+const UN=['g','ml','un'];
+
+function def(){
+ const ing=[['Pão de hambúrguer (pacote)',14,8,'un'],['Blend bovino',38,1000,'g'],['Queijo fatiado',36,1000,'g'],['Bacon',42,1000,'g'],['Alface',4,250,'g'],['Tomate',8,1000,'g'],['Maionese da casa',18,1000,'g'],['Batata congelada',16,1000,'g'],['Óleo de fritura',8,900,'ml'],['Refrigerante lata',3.2,1,'un']].map((a,i)=>({id:'i'+i,n:a[0],p:a[1],q:a[2],u:a[3]}));
+ const base=[['i:i0',1],['i:i1',120],['i:i2',15],['i:i4',10],['i:i5',20],['i:i6',15]];
+ const L=a=>a.map(x=>({r:x[0],q:x[1]}));
+ return{
+  fixed:[['Aluguel',2500],['Energia elétrica',900],['Gás',450],['Água e esgoto',250],['Internet e telefone',150],['Funcionários (salários + encargos)',6000],['Pró-labore (retirada do dono)',3000],['Contador',350],['Marketing e redes sociais',400],['Manutenção e limpeza',350],['Sistema/PDV e outros',300]].map(a=>({n:a[0],v:a[1]})),
+  vol:2500,ing,
+  prods:[
+   {id:'p0',n:'X-Burger',t:'Hambúrguer',e:1.2,m:35,pp:0,l:L(base)},
+   {id:'p1',n:'X-Bacon',t:'Hambúrguer',e:1.2,m:35,pp:0,l:L([...base,['i:i3',30]])},
+   {id:'p2',n:'Batata frita (porção)',t:'Porção',e:1.5,m:50,pp:0,l:L([['i:i7',250],['i:i8',30]])},
+   {id:'p3',n:'Combo X-Bacon + batata + refri',t:'Combo',e:0.8,m:30,pp:0,l:L([['p:p1',1],['p:p2',1],['i:i9',1]])},
+   {id:'p4',n:'Promo dupla X-Burger',t:'Promoção',e:1,m:25,pp:0,l:L([['p:p0',2],['i:i9',2]])}],
+  tax:{i:1,rate:4},
+  pay:[{n:'Dinheiro',s:10,f:0},{n:'PIX',s:25,f:0.99},{n:'Débito',s:25,f:1.99},{n:'Crédito',s:40,f:3.79}],
+  app:0,waste:3};
+}
+let S;try{S=JSON.parse(localStorage.getItem('pb2'))}catch(e){}
+if(!S||!S.prods)S=def();
+let tab='sum';
+const save=()=>{try{localStorage.setItem('pb2',JSON.stringify(S))}catch(e){}};
+
+const I=(p,v,s)=>s?`<input data-p="${p}" data-t="s" value="${esc(v)}">`:`<input data-p="${p}" type="number" step="any" min="0" inputmode="decimal" value="${v}">`;
+const O=(v,t,s)=>`<option value="${esc(v)}"${v===s?' selected':''}>${esc(t)}</option>`;
+const opts=(sel,self)=>'<optgroup label="Ingredientes">'+S.ing.map(i=>O('i:'+i.id,`${i.n} (${i.u})`,sel)).join('')+'</optgroup><optgroup label="Produtos prontos">'+S.prods.filter(x=>x.id!==self).map(x=>O('p:'+x.id,x.n+' (un)',sel)).join('')+'</optgroup>';
+
+function vProd(){
+ return S.prods.map((p,n)=>`<div class="card">
+ <div class="row g-h">${I(`prods.${n}.n`,p.n,1).replace('<input','<input class="name"')}
+ <select data-p="prods.${n}.t" data-t="s">${TYPES.map(t=>O(t,t,p.t)).join('')}</select>
+ <button class="x" data-a="cp" data-i="${n}" title="Duplicar produto">⧉</button><button class="x" data-a="dp" data-i="${n}" title="Remover produto">✕</button></div>
+ <p class="mu">Receita: escolha os ingredientes (ou outros produtos, para montar combos e promoções) e a quantidade.</p>
+ ${p.l.map((l,j)=>`<div class="row g-l"><select data-p="prods.${n}.l.${j}.r" data-t="s">${opts(l.r,p.id)}</select>${I(`prods.${n}.l.${j}.q`,l.q)}<button class="x" data-a="dl" data-i="${n}" data-j="${j}" title="Remover item">✕</button></div>`).join('')}
+ <button class="ghost" data-a="al" data-i="${n}">+ Adicionar item à receita</button>
+ <div class="row g-3"><label>Embalagem e extras (R$)${I(`prods.${n}.e`,p.e)}</label><label>Margem de lucro desejada (% do preço)${I(`prods.${n}.m`,p.m)}</label><label>Preço que você cobra hoje (R$, opcional)${I(`prods.${n}.pp`,p.pp)}</label></div>
+ <div class="sug"><div><small>Preço sugerido</small><div class="big" data-o="pr${n}"></div></div><div><small>Arredondado (final 0,90)</small><div class="big rd" data-o="rd${n}"></div></div></div>
+ <div class="stats"><div class="st"><small>Custo dos ingredientes</small><b data-o="c${n}"></b></div><div class="st"><small>Custo fixo rateado</small><b data-o="f${n}"></b></div><div class="st"><small>Imposto</small><b data-o="x${n}"></b></div><div class="st"><small>Maquininha/app</small><b data-o="m${n}"></b></div><div class="st"><small>Lucro por venda</small><b data-o="l${n}"></b></div></div>
+ <div id="rl${n}" class="small"></div></div>`).join('')+'<button class="btn" data-a="ap">+ Novo produto, combo ou promoção</button>';
+}
+function vSum(){
+ return `<div class="card"><div class="hrow"><h3>Tabela de preços</h3><button class="ghost noprint" data-a="pr">Imprimir</button></div><p class="mu">Preço sugerido de cada item, com margem, impostos e taxas já incluídos.</p>
+ <div class="sc"><table class="tbl"><thead><tr><th>Produto</th><th>Custo total</th><th>Preço sugerido</th><th>Arredondado</th><th>Lucro no arredondado</th></tr></thead><tbody id="sumtbl"></tbody></table></div></div>
+ <div class="card"><h3>Saúde financeira do mês</h3><p class="mu">Estimativa com a média dos seus produtos e as vendas mensais informadas em Custos fixos.</p>
+ <div class="stats"><div class="st"><small>Faturamento mínimo (ponto de equilíbrio)</small><b data-o="be"></b></div><div class="st"><small>Mínimo por dia</small><b data-o="bed"></b></div><div class="st"><small>Faturamento previsto</small><b data-o="rev"></b></div><div class="st"><small>Lucro mensal estimado</small><b data-o="pf"></b></div></div></div>`;
+}
+function vIng(){
+ return `<div class="card"><h3>Ingredientes e insumos</h3><p class="mu">Informe o preço que você paga pela embalagem e o que vem nela. O custo por unidade é calculado sozinho.</p>
+ <div class="sc"><div class="row g-ing hd"><span>Nome</span><span>Preço pago (R$)</span><span>Qtd. na embalagem</span><span>Unid.</span><span>Custo por unid.</span><span></span></div>
+ ${S.ing.map((i,n)=>`<div class="row g-ing">${I(`ing.${n}.n`,i.n,1)}${I(`ing.${n}.p`,i.p)}${I(`ing.${n}.q`,i.q)}<select data-p="ing.${n}.u" data-t="s">${UN.map(u=>O(u,u,i.u)).join('')}</select><b data-o="ic${n}"></b><button class="x" data-a="di" data-i="${n}" title="Remover">✕</button></div>`).join('')}</div>
+ <button class="ghost" data-a="ai">+ Novo ingrediente</button></div>`;
+}
+function vFix(){
+ return `<div class="card"><h3>Custos fixos mensais</h3><p class="mu">Tudo que você paga todo mês, vendendo ou não: aluguel, gás, energia, água, equipe e outros.</p>
+ ${S.fixed.map((f,n)=>`<div class="row g-f">${I(`fixed.${n}.n`,f.n,1)}${I(`fixed.${n}.v`,f.v)}<button class="x" data-a="df" data-i="${n}" title="Remover">✕</button></div>`).join('')}
+ <button class="ghost" data-a="af">+ Novo custo</button>
+ <div class="tot"><span>Total por mês</span><span data-o="tf"></span></div></div>
+ <div class="card"><h3>Rateio e perdas</h3><p class="mu">Quanto maior o volume de vendas, menor o custo fixo embutido em cada produto.</p>
+ <div class="row g-3"><label>Vendas estimadas por mês (nº de itens/pedidos)${I('vol',S.vol)}</label><label>Perdas e desperdício (% sobre ingredientes)${I('waste',S.waste||0)}</label><div class="st"><small>Custo fixo por venda</small><b data-o="fu"></b></div></div></div>`;
+}
+function vTax(){
+ return `<div class="card"><h3>Impostos</h3><p class="mu">Alíquotas nominais do Simples Nacional, Anexo I (restaurantes e lanchonetes), já preenchidas. A alíquota efetiva pode ser menor, conforme seu faturamento dos últimos 12 meses. Confirme com seu contador.</p>
+ <div class="row g-3"><label>Regime e faixa<select data-a="reg">${TX.map((t,i)=>`<option value="${i}"${i===S.tax.i?' selected':''}>${esc(t[0])}</option>`).join('')}</select></label><label>Alíquota aplicada (%)${I('tax.rate',S.tax.rate)}</label></div></div>
+ <div class="card"><h3>Maquininha e formas de pagamento</h3><p class="mu">Informe a taxa da sua maquininha e quanto das vendas vem de cada forma de pagamento. A calculadora usa a taxa média ponderada.</p>
+ <div class="row g-p hd"><span>Forma</span><span>% das vendas</span><span>Taxa (%)</span></div>
+ ${S.pay.map((p,n)=>`<div class="row g-p"><b>${p.n}</b>${I(`pay.${n}.s`,p.s)}${I(`pay.${n}.f`,p.f)}</div>`).join('')}
+ <div class="tot"><span>Soma das vendas <span class="mu">(deve dar 100%)</span></span><span data-o="sh"></span></div>
+ <div class="tot"><span>Taxa média da maquininha</span><span data-o="pay"></span></div></div>
+ <div class="card"><h3>Delivery e outras taxas</h3><p class="mu">Comissão média de aplicativos (iFood etc.) sobre o total das vendas. Deixe 0 se não usa.</p>
+ <div class="row g-3"><label>Comissão de aplicativos (%)${I('app',S.app)}</label><div class="st"><small>Total de impostos e taxas sobre cada venda</small><b data-o="vr"></b></div></div></div>`;
+}
+function render(){
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.i===tab));
+ $('#main').innerHTML=({sum:vSum,prod:vProd,ing:vIng,fix:vFix,tax:vTax})[tab]();
+ calc();
+}
+function calc(){
+ const tf=S.fixed.reduce((a,x)=>a+x.v,0),fu=S.vol>0?tf/S.vol:0;
+ const pay=S.pay.reduce((a,x)=>a+x.s*x.f/100,0),sh=S.pay.reduce((a,x)=>a+x.s,0);
+ const vr=S.tax.rate+pay+S.app;
+ const V={tf:R(tf),fu:R(fu),pay:P(pay),vr:P(vr),sh:P(sh),tx:P(S.tax.rate)};
+ S.ing.forEach((i,n)=>V['ic'+n]=U(i.q>0?i.p/i.q:0)+' /'+i.u);
+ let rows='',nv=0,sc=0,sp=0;const rnd=v=>{if(!(v>0))return NaN;let r=Math.floor(v)+.9;if(r<v)r+=1;return r};
+ const cm=(p,d)=>d>5?0:p.l.reduce((a,l)=>{
+  const [k,id]=String(l.r).split(':');
+  if(k==='i'){const i=S.ing.find(x=>x.id===id);return a+(i&&i.q>0?i.p/i.q*l.q*(1+(S.waste||0)/100):0)}
+  const o=S.prods.find(x=>x.id===id);return a+(o&&o!==p?cm(o,d+1)*l.q:0)},p.e);
+ S.prods.forEach((p,n)=>{
+  const c=cm(p,0),cost=c+fu,d=100-vr-p.m,price=d>0?cost/(d/100):NaN;
+  const rd=rnd(price),lr=rd*(1-vr/100)-cost;
+  Object.assign(V,{['c'+n]:R(c),['f'+n]:R(fu),['pr'+n]:R(price),['x'+n]:R(price*S.tax.rate/100),['m'+n]:R(price*(pay+S.app)/100),['l'+n]:R(price*p.m/100),['rd'+n]:R(rd)});
+  if(price>0){nv++;sc+=c/price;sp+=price}
+  rows+=`<tr><td>${esc(p.n)} <span class="tag">${p.t}</span></td><td>${R(cost)}</td><td>${R(price)}</td><td><b>${R(rd)}</b></td><td class="${lr>=0?'ok':'warn'}">${R(lr)}</td></tr>`;
+  const e=document.getElementById('rl'+n);
+  if(e){
+   if(!(d>0)){e.textContent='Atenção: margem, imposto e taxas somam 100% ou mais. Reduza a margem.';e.className='small warn'}
+   else if(p.pp>0){const lu=p.pp*(1-vr/100)-cost;e.textContent=`No preço atual de ${R(p.pp)}: lucro de ${R(lu)} por venda (margem de ${P(lu/p.pp*100)}).`;e.className='small '+(lu>=0?'ok':'warn')}
+   else{e.textContent='';e.className='small'}
+  }
+ });
+ const cv=nv?sc/nv:0,ap=nv?sp/nv:0,dn=1-vr/100-cv,be=dn>0?tf/dn:NaN;
+ V.be=R(be);V.bed=R(be/30);V.rev=R(S.vol*ap);V.pf=R(S.vol*ap*dn-tf);
+ const st=document.getElementById('sumtbl');if(st)st.innerHTML=rows||'<tr><td colspan="5">Nenhum produto cadastrado.</td></tr>';
+ document.querySelectorAll('[data-o]').forEach(e=>e.textContent=V[e.dataset.o]??'');
+}
+function setP(path,v){const k=path.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v}
+document.addEventListener('input',e=>{const t=e.target;if(!t.dataset.p)return;setP(t.dataset.p,t.dataset.t==='s'?t.value:(parseFloat(t.value)||0));calc();save()});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset.a==='reg'){S.tax.i=+t.value;if(TX[S.tax.i][1]!==null)S.tax.rate=TX[S.tax.i][1];render();save()}
+ else if(t.dataset.p&&t.dataset.p.endsWith('.t')){render()}});
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button[data-a]');if(!b)return;
+ const a=b.dataset.a,i=+b.dataset.i,j=+b.dataset.j;
+ if(a==='tab')tab=b.dataset.i;
+ else if(a==='af')S.fixed.push({n:'Novo custo',v:0});
+ else if(a==='df')S.fixed.splice(i,1);
+ else if(a==='ai')S.ing.push({id:'i'+uid(),n:'Novo ingrediente',p:0,q:1,u:'g'});
+ else if(a==='di')S.ing.splice(i,1);
+ else if(a==='ap')S.prods.push({id:'p'+uid(),n:'Novo produto',t:'Hambúrguer',e:0,m:30,pp:0,l:[]});
+ else if(a==='dp')S.prods.splice(i,1);
+ else if(a==='al')S.prods[i].l.push({r:S.ing.length?'i:'+S.ing[0].id:'',q:1});
+ else if(a==='dl')S.prods[i].l.splice(j,1);
+ else if(a==='pr'){window.print();return}
+ else if(a==='cp'){const c=JSON.parse(JSON.stringify(S.prods[i]));c.id='p'+uid();c.n+=' (cópia)';S.prods.splice(i+1,0,c)}
+ else if(a==='rs'){S=def();tab='sum'}
+ else return;
+ render();save();
+});
+render();
+</script>
+</body>
+</html>
