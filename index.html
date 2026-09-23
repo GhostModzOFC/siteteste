@@ -60,6 +60,11 @@ label input,label select{margin-top:4px}
 .hint{display:block;font-weight:400;font-size:12px;color:#8a919b;margin-top:1px}
 .steps{margin:0;padding-left:20px}.steps li{margin-bottom:8px}
 dl{margin:0}dt{font-weight:700;margin-top:10px}dd{margin:2px 0 0;color:var(--mu);font-size:14px}
+
+.bar{height:10px;background:var(--soft);border:1px solid var(--bd);border-radius:6px;overflow:hidden;margin-top:10px}
+.bf{height:100%;background:var(--ok);transition:width .3s}
+.kpi{border-left:3px solid var(--ye)}
+input[type=file]{padding:7px 8px}
 footer{max-width:1040px;margin:0 auto;padding:6px 16px 32px;color:var(--mu);font-size:12.5px}
 @media(max-width:600px){h1{font-size:22px}.g-h{grid-template-columns:1fr 38px 38px}.g-h select{grid-column:1/-1;grid-row:2}.big{font-size:29px}}
 @media print{.kpis,nav,footer,.noprint{display:none}body{background:#fff}.card{box-shadow:none}}
@@ -72,14 +77,17 @@ footer{max-width:1040px;margin:0 auto;padding:6px 16px 32px;color:var(--mu);font
 <div class="kpi"><small>Taxa média da maquininha</small><b data-o="pay"></b></div>
 <div class="kpi"><small>Custos fixos por mês</small><b data-o="tf"></b></div>
 <div class="kpi"><small>Custo fixo por venda</small><b data-o="fu"></b></div>
+<div class="kpi"><small>Faturamento hoje</small><b data-o="thf"></b></div>
 </div></div></header>
 <nav><div class="w tabs">
 <button data-a="tab" data-i="help">Como usar</button>
 <button data-a="tab" data-i="sum">Resumo</button>
+<button data-a="tab" data-i="venda">Vendas</button>
 <button data-a="tab" data-i="prod">Produtos e preços</button>
 <button data-a="tab" data-i="ing">Ingredientes</button>
 <button data-a="tab" data-i="fix">Custos fixos</button>
 <button data-a="tab" data-i="tax">Impostos e maquininha</button>
+<button data-a="tab" data-i="config">Configurações</button>
 </div></nav>
 <main class="w" id="main"></main>
 <footer>Seus dados ficam salvos neste navegador. Valores iniciais são exemplos: troque pelos seus. Estimativa para precificação, não substitui orientação do seu contador.
@@ -111,10 +119,12 @@ function def(){
    {id:'p4',n:'Promo dupla X-Burger',t:'Promoção',e:1,m:25,pp:0,l:L([['p:p0',2],['i:i9',2]])}],
   tax:{i:1,rate:4},
   pay:[{n:'Dinheiro',s:10,f:0},{n:'PIX',s:25,f:0.99},{n:'Débito',s:25,f:1.99},{n:'Crédito',s:40,f:3.79}],
-  app:0,waste:3};
+  app:0,waste:3,sales:[],goal:0,biz:{whats:'',ig:''}};
 }
 let S;try{S=JSON.parse(localStorage.getItem('pb2'))}catch(e){}
 if(!S||!S.prods)S=def();
+if(!S.sales)S.sales=[];if(S.goal==null)S.goal=0;if(!S.biz)S.biz={whats:'',ig:''};
+let PR={};
 let tab='help';try{if(localStorage.getItem('pb2'))tab='sum'}catch(e){}
 const save=()=>{try{localStorage.setItem('pb2',JSON.stringify(S))}catch(e){}};
 
@@ -158,11 +168,33 @@ function vProd(){
  <p class="how" data-o="ex${n}"></p><div class="stats"><div class="st"><small>Custo (ingredientes + embalagem)</small><b data-o="c${n}"></b></div><div class="st"><small>Custo fixo rateado</small><b data-o="f${n}"></b></div><div class="st"><small>Imposto</small><b data-o="x${n}"></b></div><div class="st"><small>Maquininha/app</small><b data-o="m${n}"></b></div><div class="st"><small>Lucro por venda</small><b data-o="l${n}"></b></div></div>
  <div id="rl${n}" class="small"></div></div>`).join('')+'<button class="btn" data-a="ap">+ Novo produto, combo ou promoção</button>';
 }
+function vVenda(){
+ const po=S.prods.map(p=>`<option value="${p.id}">${esc(p.n)}</option>`).join('')||'<option value="">Cadastre um produto primeiro</option>';
+ const payo=S.pay.map(pm=>`<option value="${esc(pm.n)}">${esc(pm.n)}</option>`).join('');
+ return `<div class="tip"><b>Para que serve</b><br>Registre aqui cada venda real do dia. Assim você acompanha o faturamento e o lucro de verdade, não só a estimativa.</div>
+ <div class="card"><h3>Registrar venda</h3>
+ <div class="row g-3"><label>Produto<select id="svP">${po}</select></label><label>Quantidade<input id="svQ" type="number" min="1" step="1" value="1"></label><label>Forma de pagamento<select id="svPay">${payo}</select></label></div>
+ <button class="btn" data-a="av">+ Registrar venda</button></div>
+ <div class="card"><h3>Hoje</h3><div class="stats" id="vHoje"></div></div>
+ <div class="card"><h3>Este mês</h3><div class="stats" id="vMes"></div></div>
+ <div class="card"><h3>Últimas vendas</h3><p class="mu">As 30 vendas mais recentes.</p><div class="sc"><table class="tbl"><thead><tr><th>Quando</th><th>Produto</th><th>Qtd.</th><th>Pagamento</th><th>Valor</th><th>Lucro</th><th></th></tr></thead><tbody id="vTbl"></tbody></table></div></div>`;
+}
+function vConfig(){
+ return `<div class="card"><h3>Contato do negócio</h3><p class="mu">Só para sua referência dentro da calculadora.</p>
+ <div class="row g-3"><label>WhatsApp${I('biz.whats',S.biz.whats,1)}</label><label>Instagram${I('biz.ig',S.biz.ig,1)}</label></div></div>
+ <div class="card"><h3>Meta de faturamento mensal</h3><p class="mu">Acompanhe o quanto falta para bater a meta do mês, com base nas vendas registradas.</p>
+ <div class="row g-3"><label>Meta do mês (R$)${I('goal',S.goal||0)}</label><div class="st"><small>Faturado este mês</small><b data-o="gm"></b></div></div>
+ <div class="bar"><div class="bf" id="gbf" style="width:0%"></div></div><p class="small" id="gtxt"></p></div>
+ <div class="card"><h3>Backup dos dados</h3><p class="mu">Tudo fica salvo neste navegador. Exporte de vez em quando para não perder nada, ou para usar em outro aparelho.</p>
+ <button class="ghost" data-a="exp">Exportar backup (.json)</button>
+ <label style="margin-top:4px;display:block">Importar backup<input type="file" id="impF" accept="application/json"></label></div>`;
+}
 function vSum(){
  return `<div class="card"><div class="hrow"><h3>Tabela de preços</h3><button class="ghost noprint" data-a="pr">Imprimir</button></div><p class="mu"><b>Preço sugerido:</b> o mínimo para você ter a margem escolhida. <b>Arredondado:</b> valor pronto para o cardápio, com final ,90. <b>Lucro no arredondado:</b> quanto sobra em cada venda nesse preço, depois de custos, imposto e taxas. Em vermelho, significa prejuízo.</p>
  <div class="sc"><table class="tbl"><thead><tr><th>Produto</th><th>Custo total</th><th>Preço sugerido</th><th>Arredondado</th><th>Lucro no arredondado</th></tr></thead><tbody id="sumtbl"></tbody></table></div></div>
  <div class="card"><h3>Saúde financeira do mês</h3><p class="mu">Estimativa com a média dos seus produtos e as vendas mensais informadas em Custos fixos.</p>
- <div class="stats"><div class="st"><small>Faturamento mínimo (ponto de equilíbrio)</small><b data-o="be"></b></div><div class="st"><small>Mínimo por dia</small><b data-o="bed"></b></div><div class="st"><small>Faturamento previsto</small><b data-o="rev"></b></div><div class="st"><small>Lucro mensal estimado</small><b data-o="pf"></b></div></div><p class="mu" style="margin:12px 0 0">Ponto de equilíbrio é o quanto você precisa vender no mês só para pagar todas as contas. Acima disso, começa o lucro.</p></div>`;
+ <div class="stats"><div class="st"><small>Faturamento mínimo (ponto de equilíbrio)</small><b data-o="be"></b></div><div class="st"><small>Mínimo por dia</small><b data-o="bed"></b></div><div class="st"><small>Faturamento previsto</small><b data-o="rev"></b></div><div class="st"><small>Lucro mensal estimado</small><b data-o="pf"></b></div></div><p class="mu" style="margin:12px 0 0">Ponto de equilíbrio é o quanto você precisa vender no mês só para pagar todas as contas. Acima disso, começa o lucro.</p></div>
+ <div class="card"><h3>Destaques do mês</h3><p class="mu">Com base nas vendas registradas na aba Vendas.</p><div class="stats"><div class="st"><small>Mais vendido</small><b data-o="topv"></b></div><div class="st"><small>Mais lucrativo</small><b data-o="topl"></b></div><div class="st"><small>Ticket médio</small><b data-o="tk"></b></div></div></div>`;
 }
 function vIng(){
  return TIP.ing+`<div class="card"><h3>Ingredientes e insumos</h3><p class="mu">Informe o preço que você paga pela embalagem e o que vem nela. Exemplo: pacote de bacon de 1 kg por R$ 42 → preço 42, quantidade 1000, unidade g. O custo por unidade é calculado sozinho.</p>
@@ -191,7 +223,7 @@ function vTax(){
 }
 function render(){
  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.i===tab));
- $('#main').innerHTML=({help:vHelp,sum:vSum,prod:vProd,ing:vIng,fix:vFix,tax:vTax})[tab]();
+ $('#main').innerHTML=({help:vHelp,sum:vSum,venda:vVenda,config:vConfig,prod:vProd,ing:vIng,fix:vFix,tax:vTax})[tab]();
  calc();
 }
 function calc(){
@@ -208,6 +240,7 @@ function calc(){
  S.prods.forEach((p,n)=>{
   const c=cm(p,0),cost=c+fu,d=100-vr-p.m,price=d>0?cost/(d/100):NaN;
   const rd=rnd(price),lr=rd*(1-vr/100)-cost;
+  PR[p.id]={cost,price:rd,tax:rd*S.tax.rate/100,fee:rd*(pay+S.app)/100};
   Object.assign(V,{['c'+n]:R(c),['f'+n]:R(fu),['pr'+n]:R(price),['x'+n]:R(price*S.tax.rate/100),['m'+n]:R(price*(pay+S.app)/100),['l'+n]:R(price*p.m/100),['rd'+n]:R(rd),['ex'+n]:d>0?`Como chegamos ao preço: custo total de ${R(cost)} (ingredientes, embalagem e parte das contas fixas) ÷ ${P(d)} = ${R(price)}. Os ${P(d)} são o que resta do preço depois de tirar ${P(S.tax.rate)} de imposto, ${P(pay+S.app)} de maquininha e apps, e ${P(p.m)} de lucro.`:''});
   if(price>0){nv++;sc+=c/price;sp+=price}
   rows+=`<tr><td>${esc(p.n)} <span class="tag">${p.t}</span></td><td>${R(cost)}</td><td>${R(price)}</td><td><b>${R(rd)}</b></td><td class="${lr>=0?'ok':'warn'}">${R(lr)}</td></tr>`;
@@ -221,6 +254,26 @@ function calc(){
  const cv=nv?sc/nv:0,ap=nv?sp/nv:0,dn=1-vr/100-cv,be=dn>0?tf/dn:NaN;
  V.be=R(be);V.bed=R(be/30);V.rev=R(S.vol*ap);V.pf=R(S.vol*ap*dn-tf);
  const st=document.getElementById('sumtbl');if(st)st.innerHTML=rows||'<tr><td colspan="5">Nenhum produto cadastrado.</td></tr>';
+ const dk=d=>new Date(d).toISOString().slice(0,10),mk=d=>new Date(d).toISOString().slice(0,7);
+ const today=dk(Date.now()),month=mk(Date.now());
+ let td={f:0,l:0,n:0},md={f:0,l:0,n:0},cnt={},prof={};
+ S.sales.forEach(sl=>{
+  const k=dk(sl.ts),m=mk(sl.ts),rev=sl.price*sl.qty,pr2=(sl.price-sl.cost-sl.tax-sl.fee)*sl.qty;
+  if(k===today){td.f+=rev;td.l+=pr2;td.n+=sl.qty}
+  if(m===month){md.f+=rev;md.l+=pr2;md.n+=sl.qty;cnt[sl.pid]=(cnt[sl.pid]||0)+sl.qty;prof[sl.pid]=(prof[sl.pid]||0)+pr2}
+ });
+ V.thf=R(td.f);V.gm=R(md.f);
+ const nm=id=>{const pp=S.prods.find(x=>x.id===id);return pp?pp.n:'—'};
+ let topv='—',topl='—',mv=-1,ml=-1;
+ Object.keys(cnt).forEach(id=>{if(cnt[id]>mv){mv=cnt[id];topv=nm(id)+' ('+cnt[id]+')'}});
+ Object.keys(prof).forEach(id=>{if(prof[id]>ml){ml=prof[id];topl=nm(id)}});
+ V.topv=S.sales.length?topv:'Sem vendas ainda';V.topl=S.sales.length?topl:'Sem vendas ainda';V.tk=md.n?R(md.f/md.n):'—';
+ const vh=$('#vHoje'),vm=$('#vMes'),vt=$('#vTbl');
+ if(vh)vh.innerHTML=`<div class="st"><small>Faturamento</small><b>${R(td.f)}</b></div><div class="st"><small>Lucro</small><b>${R(td.l)}</b></div><div class="st"><small>Itens vendidos</small><b>${td.n}</b></div><div class="st"><small>Ticket médio</small><b>${td.n?R(td.f/td.n):'—'}</b></div>`;
+ if(vm)vm.innerHTML=`<div class="st"><small>Faturamento</small><b>${R(md.f)}</b></div><div class="st"><small>Lucro</small><b>${R(md.l)}</b></div><div class="st"><small>Itens vendidos</small><b>${md.n}</b></div><div class="st"><small>Ticket médio</small><b>${md.n?R(md.f/md.n):'—'}</b></div>`;
+ if(vt)vt.innerHTML=S.sales.slice(0,30).map((sl,idx)=>`<tr><td>${new Date(sl.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${esc(sl.pname)}</td><td>${sl.qty}</td><td>${esc(sl.pay)}</td><td>${R(sl.price*sl.qty)}</td><td class="${(sl.price-sl.cost-sl.tax-sl.fee)>=0?'ok':'warn'}">${R((sl.price-sl.cost-sl.tax-sl.fee)*sl.qty)}</td><td><button class="x" data-a="dv" data-i="${idx}" title="Excluir">✕</button></td></tr>`).join('')||'<tr><td colspan="7">Nenhuma venda registrada ainda.</td></tr>';
+ const gbf=$('#gbf'),gtxt=$('#gtxt');
+ if(gbf){const pct=S.goal>0?Math.min(100,md.f/S.goal*100):0;gbf.style.width=pct+'%';gtxt.textContent=S.goal>0?(md.f>=S.goal?'Meta batida! 🎉':`Faltam ${R(Math.max(0,S.goal-md.f))} para a meta deste mês.`):'Defina uma meta para acompanhar o progresso.'}
  document.querySelectorAll('[data-o]').forEach(e=>e.textContent=V[e.dataset.o]??'');
 }
 function setP(path,v){const k=path.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v}
@@ -241,9 +294,23 @@ document.addEventListener('click',e=>{
  else if(a==='dl')S.prods[i].l.splice(j,1);
  else if(a==='pr'){window.print();return}
  else if(a==='cp'){const c=JSON.parse(JSON.stringify(S.prods[i]));c.id='p'+uid();c.n+=' (cópia)';S.prods.splice(i+1,0,c)}
+ else if(a==='av'){
+  const pid=$('#svP').value,qty=Math.max(1,parseInt($('#svQ').value)||1),payN=$('#svPay').value,pr2=PR[pid];
+  if(pid&&pr2){const p=S.prods.find(x=>x.id===pid);S.sales.unshift({id:'v'+uid(),ts:Date.now(),pid,pname:p.n,qty,pay:payN,price:pr2.price,cost:pr2.cost,tax:pr2.tax,fee:pr2.fee})}
+ }
+ else if(a==='dv')S.sales.splice(i,1);
+ else if(a==='exp'){const blob=new Blob([JSON.stringify(S)],{type:'application/json'});const url=URL.createObjectURL(blob);const lk=document.createElement('a');lk.href=url;lk.download='backup-prime-burgers.json';lk.click();URL.revokeObjectURL(url);return}
  else if(a==='rs'){S=def();tab='sum'}
  else return;
  render();save();
+});
+document.addEventListener('change',e=>{
+ if(e.target.id==='impF'){
+  const f=e.target.files[0];if(!f)return;
+  const rd2=new FileReader();
+  rd2.onload=()=>{try{const d=JSON.parse(rd2.result);if(d&&Array.isArray(d.prods)){if(!d.sales)d.sales=[];if(!d.biz)d.biz={whats:'',ig:''};if(d.goal==null)d.goal=0;S=d;tab='sum';render();save();}}catch(err){}};
+  rd2.readAsText(f);
+ }
 });
 render();
 </script>
