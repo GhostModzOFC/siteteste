@@ -277,7 +277,7 @@ function vTax(){
 function render(){
  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.i===tab));
  $('#main').innerHTML=({help:vHelp,sum:vSum,venda:vVenda,config:vConfig,prod:vProd,ing:vIng,est:vEst,fix:vFix,tax:vTax})[tab]();
- calc();filt();window.scrollTo(0,0);
+ calc();filt();
 }
 function calc(){
  const tf=S.fixed.reduce((a,x)=>a+x.v,0),fu=S.vol>0?tf/S.vol:0;
@@ -403,6 +403,7 @@ document.addEventListener('click',e=>{
  else if(a==='rs'){S=def();tab='sum'}
  else return;
  render();save();
+ if(a==='tab')window.scrollTo(0,0);
 });
 document.addEventListener('change',e=>{
  if(e.target.id==='impF'){
