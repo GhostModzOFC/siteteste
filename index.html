@@ -61,6 +61,12 @@ label input,label select{margin-top:4px}
 .steps{margin:0;padding-left:20px}.steps li{margin-bottom:8px}
 dl{margin:0}dt{font-weight:700;margin-top:10px}dd{margin:2px 0 0;color:var(--mu);font-size:14px}
 
+.themebtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:8px;padding:8px 11px;font-size:16px;cursor:pointer;flex:none}
+.search{display:flex;gap:8px;margin-bottom:12px}.search input{flex:1}.search select{width:180px}
+.g-stk{grid-template-columns:2fr 1fr 1fr 55px 1fr 90px;min-width:640px}
+.lowrow{background:rgba(192,40,28,.06)}
+.badge{font-size:11px;font-weight:700;border-radius:20px;padding:2px 8px}
+.badge.ok{background:rgba(18,128,92,.12);color:var(--ok)}.badge.bad{background:rgba(192,40,28,.12);color:var(--bad)}
 .bar{height:10px;background:var(--soft);border:1px solid var(--bd);border-radius:6px;overflow:hidden;margin-top:10px}
 .bf{height:100%;background:var(--ok);transition:width .3s}
 .kpi{border-left:3px solid var(--ye)}
@@ -71,7 +77,7 @@ footer{max-width:1040px;margin:0 auto;padding:6px 16px 32px;color:var(--mu);font
 </style>
 </head>
 <body>
-<header><div class="w"><div class="top"><div class="logo">🍔</div><div><h1>Calculadora Prime Burger's</h1><p>Precificação profissional: custos, impostos e taxas em um só lugar</p></div></div>
+<header><div class="w"><div class="top"><div class="logo">🍔</div><div style="flex:1"><h1>Calculadora Prime Burger's</h1><p>Precificação profissional: custos, impostos e taxas em um só lugar</p></div><button class="themebtn" id="themeBtn" title="Alternar modo claro/escuro">🌓</button></div>
 <div class="kpis">
 <div class="kpi"><small>Imposto sobre vendas</small><b data-o="tx"></b></div>
 <div class="kpi"><small>Taxa média da maquininha</small><b data-o="pay"></b></div>
@@ -105,26 +111,34 @@ const TYPES=['Hambúrguer','Combo','Promoção','Porção','Bebida','Sobremesa',
 const UN=['g','ml','un'];
 
 function def(){
- const ing=[['Pão de hambúrguer (pacote)',14,8,'un'],['Blend bovino',38,1000,'g'],['Queijo fatiado',36,1000,'g'],['Bacon',42,1000,'g'],['Alface',4,250,'g'],['Tomate',8,1000,'g'],['Maionese da casa',18,1000,'g'],['Batata congelada',16,1000,'g'],['Óleo de fritura',8,900,'ml'],['Refrigerante lata',3.2,1,'un']].map((a,i)=>({id:'i'+i,n:a[0],p:a[1],q:a[2],u:a[3]}));
+ const ing=[['Pão de hambúrguer (pacote)',14,8,'un'],['Blend bovino',38,1000,'g'],['Queijo fatiado',36,1000,'g'],['Bacon',42,1000,'g'],['Alface',4,250,'g'],['Tomate',8,1000,'g'],['Maionese da casa',18,1000,'g'],['Batata congelada',16,1000,'g'],['Óleo de fritura',8,900,'ml'],['Refrigerante lata',3.2,1,'un']].map((a,i)=>({id:'i'+i,n:a[0],p:0,q:a[2],u:a[3],stk:0,min:0}));
  const base=[['i:i0',1],['i:i1',120],['i:i2',15],['i:i4',10],['i:i5',20],['i:i6',15]];
  const L=a=>a.map(x=>({r:x[0],q:x[1]}));
  return{
-  fixed:[['Aluguel',2500],['Energia elétrica',900],['Gás',450],['Água e esgoto',250],['Internet e telefone',150],['Funcionários (salários + encargos)',6000],['Pró-labore (retirada do dono)',3000],['Contador',350],['Marketing e redes sociais',400],['Manutenção e limpeza',350],['Sistema/PDV e outros',300]].map(a=>({n:a[0],v:a[1]})),
-  vol:2500,ing,
+  fixed:[['Aluguel',0],['Energia elétrica',0],['Gás',0],['Água e esgoto',0],['Internet e telefone',0],['Funcionários (salários + encargos)',0],['Pró-labore (retirada do dono)',0],['Contador',0],['Marketing e redes sociais',0],['Manutenção e limpeza',0],['Sistema/PDV e outros',0]].map(a=>({n:a[0],v:0})),
+  vol:0,ing,
   prods:[
-   {id:'p0',n:'X-Burger',t:'Hambúrguer',e:1.2,m:35,pp:0,l:L(base)},
-   {id:'p1',n:'X-Bacon',t:'Hambúrguer',e:1.2,m:35,pp:0,l:L([...base,['i:i3',30]])},
-   {id:'p2',n:'Batata frita (porção)',t:'Porção',e:1.5,m:50,pp:0,l:L([['i:i7',250],['i:i8',30]])},
-   {id:'p3',n:'Combo X-Bacon + batata + refri',t:'Combo',e:0.8,m:30,pp:0,l:L([['p:p1',1],['p:p2',1],['i:i9',1]])},
-   {id:'p4',n:'Promo dupla X-Burger',t:'Promoção',e:1,m:25,pp:0,l:L([['p:p0',2],['i:i9',2]])}],
+   {id:'p0',n:'X-Burger',t:'Hambúrguer',e:0,m:0,pp:0,disc:0,l:L(base)},
+   {id:'p1',n:'X-Bacon',t:'Hambúrguer',e:0,m:0,pp:0,disc:0,l:L([...base,['i:i3',30]])},
+   {id:'p2',n:'Batata frita (porção)',t:'Porção',e:0,m:0,pp:0,disc:0,l:L([['i:i7',250],['i:i8',30]])},
+   {id:'p3',n:'Combo X-Bacon + batata + refri',t:'Combo',e:0,m:0,pp:0,disc:0,l:L([['p:p1',1],['p:p2',1],['i:i9',1]])},
+   {id:'p4',n:'Promo dupla X-Burger',t:'Promoção',e:0,m:0,pp:0,disc:0,l:L([['p:p0',2],['i:i9',2]])}],
   tax:{i:1,rate:4},
-  pay:[{n:'Dinheiro',s:10,f:0},{n:'PIX',s:25,f:0.99},{n:'Débito',s:25,f:1.99},{n:'Crédito',s:40,f:3.79}],
-  app:0,waste:3,sales:[],goal:0,biz:{whats:'',ig:''}};
+  pay:[{n:'Dinheiro',s:0,f:0},{n:'PIX',s:0,f:0.99},{n:'Débito',s:0,f:1.99},{n:'Crédito',s:0,f:3.79}],
+  app:0,waste:0,sales:[],goal:0,biz:{whats:'',ig:''},sim:{ing:0,fix:0}};
 }
 let S;try{S=JSON.parse(localStorage.getItem('pb2'))}catch(e){}
 if(!S||!S.prods)S=def();
-if(!S.sales)S.sales=[];if(S.goal==null)S.goal=0;if(!S.biz)S.biz={whats:'',ig:''};
+if(!S.sales)S.sales=[];if(S.goal==null)S.goal=0;if(!S.biz)S.biz={whats:'',ig:''};if(!S.sim)S.sim={ing:0,fix:0};S.ing.forEach(i=>{if(i.stk==null)i.stk=0;if(i.min==null)i.min=0});S.prods.forEach(p=>{if(p.disc==null)p.disc=0});
 let PR={};
+try{const th=localStorage.getItem('pbtheme');if(th)document.documentElement.setAttribute('data-theme',th)}catch(e){}
+document.getElementById('themeBtn').addEventListener('click',()=>{
+ const cur=document.documentElement.getAttribute('data-theme');
+ const nx=cur==='dark'?'light':(cur==='light'?'':'dark');
+ if(nx)document.documentElement.setAttribute('data-theme',nx);else document.documentElement.removeAttribute('data-theme');
+ try{localStorage.setItem('pbtheme',nx)}catch(e){}
+});
+let searchQ='',filtCat='Todos';
 let tab='help';try{if(localStorage.getItem('pb2'))tab='sum'}catch(e){}
 const save=()=>{try{localStorage.setItem('pb2',JSON.stringify(S))}catch(e){}};
 
