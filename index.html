@@ -80,7 +80,7 @@ dk=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).pad
 fd=t=>new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
 const TX=[['MEI (DAS fixo)',0],['Simples Anexo I, 1ª faixa (até R$ 180 mil/ano)',4],['Simples Anexo I, 2ª faixa (até R$ 360 mil/ano)',7.3],['Simples Anexo I, 3ª faixa (até R$ 720 mil/ano)',9.5],['Simples Anexo I, 4ª faixa (até R$ 1,8 mi/ano)',10.7],['Simples Anexo I, 5ª faixa (até R$ 3,6 mi/ano)',14.3],['Simples Anexo I, 6ª faixa (até R$ 4,8 mi/ano)',19],['Outro regime (digite a alíquota)',null]];
 const TYPES=['Hambúrguer','Combo','Promoção','Porção','Bebida','Sobremesa','Outro'],UN=['g','ml','un'],ST=['Novo','Preparando','Pronto','Entregue','Cancelado'],ORG=['Balcão','WhatsApp','App'];
-const TABS=[['dash','📊','Início'],['ped','🛒','Pedidos'],['prod','🍔','Produtos'],['ing','🥩','Ingredientes'],['est','📦','Estoque'],['forn','🚚','Fornecedores'],['cli','👥','Clientes'],['cx','💰','Caixa'],['rel','📈','Relatórios'],['menu','📋','Cardápio'],['cust','🏠','Custos e taxas'],['cfg','⚙️','Ajustes']];
+const TABS=[['help','📖','Como usar'],['dash','📊','Início'],['ped','🛒','Pedidos'],['cx','💰','Caixa'],['prod','🍔','Produtos'],['ing','🥩','Ingredientes'],['est','📦','Estoque'],['forn','🚚','Fornecedores'],['cli','👥','Clientes'],['rel','📈','Relatórios'],['menu','📋','Cardápio'],['cust','🏠','Custos e taxas'],['cfg','⚙️','Ajustes']];
 function def(){
  const ing=[['Pão de hambúrguer (pacote)',14,8,'un'],['Blend bovino',38,1000,'g'],['Queijo fatiado',36,1000,'g'],['Bacon',42,1000,'g'],['Alface',4,250,'g'],['Tomate',8,1000,'g'],['Maionese da casa',18,1000,'g'],['Batata congelada',16,1000,'g'],['Óleo de fritura',8,900,'ml'],['Refrigerante lata',3.2,1,'un']].map((a,i)=>({id:'i'+i,n:a[0],p:a[1],q:a[2],u:a[3],stk:0,min:0}));
  const base=[['i:i0',1],['i:i1',120],['i:i2',15],['i:i4',10],['i:i5',20],['i:i6',15]],L=a=>a.map(x=>({r:x[0],q:x[1]})),pr=(id,n,t,l,m)=>({id,n,t,e:1,m,pp:0,promo:0,act:true,desc:'',l:L(l)});
@@ -93,7 +93,7 @@ try{const o=localStorage.getItem('pb2'),t=dk(Date.now());if(o&&localStorage.getI
 if(!S||!S.prods)S=def();fix(S);
 const save=()=>{try{localStorage.setItem('pb2',JSON.stringify(S))}catch(e){}};
 const lg=m=>{S.log.unshift({ts:Date.now(),m});S.log.length=Math.min(S.log.length,60)};
-let tab='dash',PR={},tf=0,fu=0,payAvg=0,tr=0,vr=0,cart=[],of={cli:'',pay:'',disc:0,fee:0,obs:'',org:'Balcão'},rp={k:'mes',a:'',b:''},searchQ='',filtCat='Todos';
+let tab=(S.orders.length||S.fixed.some(f=>f.v>0))?'dash':'help',PR={},tf=0,fu=0,payAvg=0,tr=0,vr=0,cart=[],of={cli:'',pay:'',disc:0,fee:0,obs:'',org:'Balcão'},rp={k:'mes',a:'',b:''},searchQ='',filtCat='Todos';
 try{const th=localStorage.getItem('pbtheme');if(th)document.documentElement.setAttribute('data-theme',th)}catch(e){}
 $('#themeBtn').onclick=()=>{const c=document.documentElement.getAttribute('data-theme'),n=c==='dark'?'light':c==='light'?'':'dark';n?document.documentElement.setAttribute('data-theme',n):document.documentElement.removeAttribute('data-theme');try{localStorage.setItem('pbtheme',n)}catch(e){}};
 const I=(p,v,s)=>s?`<input data-p="${p}" data-t="s" value="${esc(v)}">`:`<input data-p="${p}" type="number" step="any" min="0" inputmode="decimal" value="${v}">`;
@@ -223,8 +223,36 @@ function vCfg(){return `<div class="card"><h3>Negócio e meta</h3><div class="ro
  <div class="card"><h3>Segurança (PIN)</h3><p class="mu">Peça um PIN ao abrir o sistema. Deixe vazio para desativar. Trava simples deste aparelho, não substitui criptografia.</p><div class="row g-3"><label>PIN${I('pin',S.pin,1)}</label></div></div>
  <div class="card"><h3>Backup e recuperação</h3><button class="ghost" data-a="exp">Exportar backup (.json)</button><button class="ghost" data-a="rb">Recuperar backup automático (ontem)</button><label>Importar backup<input type="file" id="impF" accept="application/json"></label><button class="ghost" data-a="rs" style="margin-top:10px">Restaurar dados de exemplo</button></div>
  <div class="card"><h3>Histórico de alterações</h3>${S.log.slice(0,20).map(l=>`<p class="small">${fd(l.ts)} · ${esc(l.m)}</p>`).join('')||'<p class="mu">Nada ainda.</p>'}</div>`}
-const VIEWS={dash:vDash,ped:vPed,prod:vProd,ing:vIng,est:vEst,forn:vForn,cli:vCli,cx:vCx,rel:vRel,menu:vMenu,cust:vCust,cfg:vCfg};
-function render(){$('#nav').innerHTML=TABS.map(t=>`<button data-a="tab" data-i="${t[0]}" class="${t[0]===tab?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('');calc();$('#main').innerHTML=VIEWS[tab]();upd();filt()}
+const tip=t=>`<div class="tip">${t}</div>`;
+const TIP={
+dash:tip('<b>Tela inicial</b><br>Resumo do negócio: quanto entrou, quanto sobrou de lucro, o que vende mais e o que precisa da sua atenção (alertas). Ela se atualiza sozinha a cada pedido.'),
+ped:tip('<b>Como fazer um pedido</b><br>1. Escolha o produto e toque em <b>+</b>. 2. Ajuste as quantidades. 3. Preencha cliente, pagamento, desconto ou entrega, se houver. 4. Toque em <b>Finalizar pedido</b>. O estoque baixa sozinho. Para acompanhar, mude o status no histórico (Novo → Preparando → Pronto → Entregue).'),
+cx:tip('<b>Como usar o caixa</b><br>De manhã, <b>abra o caixa</b> com o dinheiro inicial. Durante o dia, registre <b>sangria</b> (retirar dinheiro) ou <b>suprimento</b> (colocar troco). À noite, conte o dinheiro e <b>feche o caixa</b>: o sistema mostra se sobrou ou faltou.'),
+ing:tip('<b>Ingredientes</b><br>Cadastre o que você compra: preço pago e quantidade da embalagem (ex.: bacon R$ 42 por 1000 g). Quando o preço mudar, atualize aqui e todos os produtos são recalculados. Confira os valores de exemplo e troque pelos seus.'),
+est:tip('<b>Estoque</b><br>Informe quanto tem de cada item e o <b>mínimo</b> que não pode faltar. Quando chegar mercadoria, use <b>Entrada de mercadorias</b>. Abaixo do mínimo, o item vai para a lista de compras.'),
+forn:tip('<b>Fornecedores</b><br>Guarde quem vende para você: nome, telefone, marca e produto. Use a busca para achar rápido quem vende cada coisa.'),
+cli:tip('<b>Clientes</b><br>Cadastre nome, telefone e endereço. No pedido, digite o mesmo nome e o histórico e o total gasto são somados sozinhos.'),
+rel:tip('<b>Relatórios</b><br>Escolha o período e veja faturamento, custos, impostos, taxas e lucro. Use <b>Exportar CSV</b> para abrir no Excel ou <b>PDF / Imprimir</b> e escolha "Salvar como PDF".'),
+cust:tip('<b>Custos e taxas</b><br>Aqui ficam as contas do mês (aluguel, gás, luz, equipe), o imposto e as taxas da maquininha. Preencha com atenção: eles entram no preço de cada produto e no lucro.'),
+cfg:tip('<b>Ajustes</b><br>Defina meta do mês, WhatsApp do cardápio e PIN. Faça <b>backup</b> de vez em quando: seus dados ficam só neste navegador.')};
+function vHelp(){
+ const ck=(ok,t,go)=>`<div class="al ${ok?'good':'warn'}">${ok?'✅':'⬜'} ${t} <button class="ghost" data-a="tab" data-i="${go}" style="margin:0 0 0 8px;padding:3px 10px">Abrir</button></div>`;
+ return `<div class="card"><h3>Bem-vindo ao Sistema Prime Burger's</h3><p class="mu">Um sistema completo para vender, controlar estoque e caixa e saber seu lucro. Siga os passos abaixo na ordem. Leva uns 15 minutos.</p>
+ ${ck(false,'1. <b>Ingredientes:</b> confira os preços e troque pelos seus','ing')}
+ ${ck(tf>0,'2. <b>Custos e taxas:</b> lance aluguel, gás, luz, equipe e confira imposto e maquininha','cust')}
+ ${ck(S.vol>0,'3. <b>Custos e taxas:</b> informe quantas vendas faz por mês (estimativa)','cust')}
+ ${ck(false,'4. <b>Produtos:</b> confira as receitas e escolha a margem de lucro de cada um','prod')}
+ ${ck(S.sup.length>0,'5. <b>Fornecedores:</b> cadastre quem vende para você','forn')}
+ ${ck(S.ing.some(i=>i.stk>0),'6. <b>Estoque:</b> informe o que tem em casa e o mínimo de cada item','est')}
+ ${ck(!!(S.cash.o||S.cash.h.length),'7. <b>Caixa:</b> abra o caixa no início do dia','cx')}
+ ${ck(S.orders.length>0,'8. <b>Pedidos:</b> registre sua primeira venda','ped')}</div>
+ <div class="card"><h3>Para que serve cada aba</h3><dl style="margin:0">
+ ${[['📊 Início','Resumo do dia e do mês, meta, gráfico e alertas.'],['🛒 Pedidos','Registra cada venda, baixa o estoque e guarda o histórico.'],['💰 Caixa','Abre e fecha o caixa e confere o dinheiro.'],['🍔 Produtos','Receitas, preço sugerido, margem, promoções.'],['🥩 Ingredientes','Preço de tudo o que você compra.'],['📦 Estoque','Quanto tem, o que está acabando, lista de compras e entradas.'],['🚚 Fornecedores','Nome, contato, marca e produto de quem vende para você.'],['👥 Clientes','Cadastro e quem mais compra.'],['📈 Relatórios','Faturamento, lucro e vendas por período. Exporta CSV e PDF.'],['📋 Cardápio','Cardápio pronto com botão de pedir pelo WhatsApp.'],['🏠 Custos e taxas','Contas fixas, imposto e maquininha.'],['⚙️ Ajustes','Meta, PIN, backup e histórico de alterações.']].map(x=>`<dt style="font-weight:700;margin-top:8px">${x[0]}</dt><dd style="margin:1px 0 0;color:var(--mu);font-size:14px">${x[1]}</dd>`).join('')}</dl></div>
+ <div class="card"><h3>Dicionário rápido</h3><dl style="margin:0">
+ ${[['Margem de lucro','Quanto sobra de lucro em cada R$ 100 vendidos, depois de custo, imposto e taxas.'],['Markup','Quanto o preço de venda é maior que o custo. Custo R$ 10 e preço R$ 25 = markup de 150%.'],['Custo fixo por venda','As contas do mês divididas pelas vendas. Cada lanche paga um pedacinho do aluguel, gás e luz.'],['Sangria','Retirar dinheiro do caixa durante o dia (ex.: guardar no cofre).'],['Suprimento','Colocar dinheiro no caixa (ex.: troco).'],['Ponto de equilíbrio','Faturamento mínimo para pagar todas as contas do mês, sem lucro nem prejuízo.'],['Ticket médio','Quanto cada pedido rende, em média.'],['Custo médio','Ao comprar mais caro ou mais barato, o sistema calcula a média do preço do ingrediente.']].map(x=>`<dt style="font-weight:700;margin-top:8px">${x[0]}</dt><dd style="margin:1px 0 0;color:var(--mu);font-size:14px">${x[1]}</dd>`).join('')}</dl></div>
+ <div class="card"><h3>Dicas importantes</h3><p class="mu" style="margin:0">• Os dados ficam só neste navegador e aparelho: faça backup em <b>Ajustes</b>.<br>• Cancelar um pedido devolve os ingredientes ao estoque.<br>• Os valores de exemplo são só para você ver funcionando: troque pelos seus.<br>• Imposto é uma estimativa; confirme com seu contador.</p></div>`}
+const VIEWS={help:vHelp,dash:vDash,ped:vPed,prod:vProd,ing:vIng,est:vEst,forn:vForn,cli:vCli,cx:vCx,rel:vRel,menu:vMenu,cust:vCust,cfg:vCfg};
+function render(){$('#nav').innerHTML=TABS.map(t=>`<button data-a="tab" data-i="${t[0]}" class="${t[0]===tab?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('');calc();$('#main').innerHTML=(TIP[tab]||'')+VIEWS[tab]();upd();filt()}
 function filt(){if(tab!=='prod')return;document.querySelectorAll('#main>.card').forEach(cd=>{const n=cd.querySelector('input.name'),s=cd.querySelector('select[data-t]');if(!n)return;cd.style.display=n.value.toLowerCase().includes(searchQ.toLowerCase())&&(filtCat==='Todos'||s.value===filtCat)?'':'none'})}
 function setP(path,v){const k=path.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v}
 /* ===== eventos ===== */
