@@ -41,14 +41,14 @@ R=v=>(+v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),Q=new URL
 
 /* ---- configuração da loja ---- */
 const STORE={nm:"Prime Burger's",wa:'34996982496',handle:'primeburgersmg'};
-const API='https://api.infinitepay.io/invoices/public/checkout';
+const API='https://api.checkout.infinitepay.io';
 const MENU=[
  {id:'xb',n:'X-Burger',d:'Pão, hambúrguer 120g, queijo, alface e tomate',p:18.9,e:'🍔'},
- {id:'xbc',n:'X-Bacon',d:'Pão, hambúrguer 120g, queijo, bacon crocante',p:0.03,e:'🥓'},
+ {id:'xbc',n:'X-Bacon',d:'Pão, hambúrguer 120g, queijo, bacon crocante',p:22.9,e:'🥓'},
  {id:'xsal',n:'X-Salada',d:'Pão, hambúrguer 120g, queijo, alface, tomate e maionese da casa',p:20.9,e:'🥬'},
  {id:'xtudo',n:'X-Tudo',d:'Pão, 2 hambúrgueres, queijo, bacon, ovo, presunto e salada',p:29.9,e:'🍖'},
- {id:'bat',n:'Batata Frita',d:'Porção individual crocante',p:0.10,e:'🍟'},
- {id:'ref',n:'Refrigerante Lata',d:'350ml, várias opções',p:0.02,e:'🥤'}
+ {id:'bat',n:'Batata Frita',d:'Porção individual crocante',p:0.03,e:'🍟'},
+ {id:'ref',n:'Refrigerante Lata',d:'350ml, várias opções',p:0.01,e:'🥤'}
 ];
 let cart={};
 const cartCount=()=>Object.values(cart).reduce((a,q)=>a+q,0);
@@ -88,16 +88,28 @@ async function pay(){
  total=cartTotal(),ns='PB'+Date.now().toString(36).toUpperCase(),ru=location.origin+location.pathname,
  body={handle:STORE.handle,order_nsu:ns,items,redirect_url:ru,customer:{name:nm,phone_number:'+'+wa(ph)}};
  btn.disabled=true;btn.textContent='Gerando pagamento seguro...';er('');
+ let r,d;
  try{
-  const r=await fetch(API+'/links',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),d=await r.json();
-  let ok=false;try{const u=new URL(d.url);ok=u.protocol==='https:'&&/(^|\.)infinitepay\.(com\.br|io)$/.test(u.hostname)}catch(e){}
-  if(!ok)throw new Error('resp');
-  try{localStorage.setItem('pbord_'+ns,JSON.stringify({nm,wa:ph,total,items,st:'aguardando',ts:Date.now()}))}catch(e){}
-  btn.textContent='Abrindo pagamento...';location.href=d.url;
- }catch(e){
+  r=await fetch(API+'/links',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ }catch(networkErr){
   btn.disabled=false;btn.textContent='Pagar '+R(total);
-  er('Não consegui gerar o pagamento agora. Verifique sua internet e tente de novo, ou fale com a loja pelo WhatsApp.');
+  er('Falha de conexão ao chamar a InfinitePay (pode ser bloqueio de CORS ou sem internet). Detalhe: '+(networkErr.message||networkErr));
+  return;
  }
+ try{d=await r.json()}catch(e){d={}}
+ if(!r.ok){
+  btn.disabled=false;btn.textContent='Pagar '+R(total);
+  er('A InfinitePay recusou o pedido (HTTP '+r.status+'). '+(d.message||d.error||JSON.stringify(d).slice(0,200)||'Confira se o Checkout está ativado na sua conta e se a InfiniteTag "'+STORE.handle+'" está certa.'));
+  return;
+ }
+ let ok=false;try{const u=new URL(d.url);ok=u.protocol==='https:'&&/(^|\.)infinitepay\.(com\.br|io)$/.test(u.hostname)}catch(e){}
+ if(!ok){
+  btn.disabled=false;btn.textContent='Pagar '+R(total);
+  er('A InfinitePay respondeu, mas sem um link de pagamento válido. Resposta: '+JSON.stringify(d).slice(0,200));
+  return;
+ }
+ try{localStorage.setItem('pbord_'+ns,JSON.stringify({nm,wa:ph,total,items,st:'aguardando',ts:Date.now()}))}catch(e){}
+ btn.textContent='Abrindo pagamento...';location.href=d.url;
 }
 
 async function checkPayment(){
