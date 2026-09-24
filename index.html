@@ -47,8 +47,8 @@ const MENU=[
  {id:'xbc',n:'X-Bacon',d:'Pão, hambúrguer 120g, queijo, bacon crocante',p:22.9,e:'🥓'},
  {id:'xsal',n:'X-Salada',d:'Pão, hambúrguer 120g, queijo, alface, tomate e maionese da casa',p:20.9,e:'🥬'},
  {id:'xtudo',n:'X-Tudo',d:'Pão, 2 hambúrgueres, queijo, bacon, ovo, presunto e salada',p:29.9,e:'🍖'},
- {id:'bat',n:'Batata Frita',d:'Porção individual crocante',p:0.04,e:'🍟'},
- {id:'ref',n:'Refrigerante Lata',d:'350ml, várias opções',p:0.03,e:'🥤'}
+ {id:'bat',n:'Batata Frita',d:'Porção individual crocante',p:14.9,e:'🍟'},
+ {id:'ref',n:'Refrigerante Lata',d:'350ml, várias opções',p:0.02,e:'🥤'}
 ];
 let cart={};
 const cartCount=()=>Object.values(cart).reduce((a,q)=>a+q,0);
@@ -102,7 +102,7 @@ async function pay(){
  try{d=await r.json()}catch(e){d={}}
  if(!r.ok){
   btn.disabled=false;btn.textContent='Pagar '+R(total);
-  er('A InfinitePay recusou o pedido (HTTP '+r.status+'). '+(d.message||d.error||JSON.stringify(d).slice(0,200)||'Confira se o Checkout está ativado na sua conta e se a InfiniteTag "'+STORE.handle+'" está certa.'));
+  er('A InfinitePay recusou o pedido (HTTP '+r.status+'). '+(d.message||d.error||JSON.stringify(d).slice(0,200)||'')+' — Payload enviado: '+JSON.stringify(body));
   return;
  }
  let ok=false;try{const u=new URL(d.url);ok=u.protocol==='https:'&&/(^|\.)infinitepay\.(com\.br|io)$/.test(u.hostname)}catch(e){}
