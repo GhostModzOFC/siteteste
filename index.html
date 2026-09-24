@@ -55,7 +55,7 @@ const MENU=[
  {id:'xsal',n:'X-Salada',d:'Pão, hambúrguer 120g, queijo, alface, tomate e maionese da casa',p:20.9,e:'🥬'},
  {id:'xtudo',n:'X-Tudo',d:'Pão, 2 hambúrgueres, queijo, bacon, ovo, presunto e salada',p:29.9,e:'🍖'},
  {id:'bat',n:'Batata Frita',d:'Porção individual crocante',p:14.9,e:'🍟'},
- {id:'ref',n:'Refrigerante Lata',d:'350ml, várias opções',p:0.05,e:'🥤'}
+ {id:'ref',n:'Refrigerante Lata',d:'350ml, várias opções',p:0.03,e:'🥤'}
 ];
 let cart={};
 const cartCount=()=>Object.values(cart).reduce((a,q)=>a+q,0);
@@ -92,11 +92,19 @@ function renderCheckout(){
   btn.disabled=true;btn.textContent='Gerando pagamento…';er.textContent='';
   try{
    const r=await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:Object.entries(cart).map(([id,q])=>({id,q})),name:nm,phone:ph,email:em})});
-   const d=await r.json();if(!r.ok||!d.url)throw 0;
+   let d={};try{d=await r.json()}catch(x){}
+   if(!r.ok||!d.url)throw{s:r.status,d};
    const txt=MENU.filter(i=>cart[i.id]).map(i=>`${cart[i.id]}× ${i.n}`).join(', ');
    try{localStorage.setItem('pb_last',JSON.stringify({nm,txt}))}catch(e){}
    location.href=d.url;
-  }catch(e){er.textContent='Não foi possível gerar o pagamento. Tente de novo ou fale com a loja no WhatsApp.';btn.disabled=false;btn.textContent='Pagar com Pix ou cartão'}
+  }catch(e){
+   const s=e&&e.s,d=(e&&e.d)||{};console.error('checkout',s,d);
+   er.textContent=!s?'Sem conexão com o servidor. Verifique a internet e tente de novo.'
+    :(s===404||s===405)?'Servidor de pagamento não encontrado (/api/checkout). Confirme se a pasta api foi publicada na Vercel.'
+    :d.error==='config'?'Servidor sem configuração. Falta: '+(d.missing||[]).join(', ')+'.'
+    :d.error==='infinitepay'?'A InfinitePay recusou o pedido (código '+d.status+'). Fale com a loja no WhatsApp.'
+    :'Não foi possível gerar o pagamento. Tente de novo ou fale com a loja no WhatsApp.';
+   btn.disabled=false;btn.textContent='Pagar com Pix ou cartão'}
  };
 }
 
