@@ -36,9 +36,9 @@ input{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-r
 <script>
 const $=s=>document.querySelector(s),N=v=>parseFloat(String(v).replace(',','.'))||0,R=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),
 esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const API='https://api.checkout.infinitepay.io',Q=new URLSearchParams(location.search);
+const API='https://api.infinitepay.io/invoices/public/checkout',Q=new URLSearchParams(location.search);
 let O=null;try{if(location.hash.startsWith('#p='))O=JSON.parse(decodeURIComponent(location.hash.slice(3)))}catch(e){}
-if(!O)O={manual:1,nm:"Prime Burger's",num:'Avulso',h:'',pix:'',mn:'',mc:'',n:'',w:'',it:[{n:'',q:1,u:0}],fr:0,dc:0};
+if(!O)O={manual:1,nm:"Prime Burger's",num:'Avulso',h:'primeburgersmg',pix:'',mn:'',mc:'',n:'',w:'',it:[{n:'',q:1,u:0}],fr:0,dc:0};
 $('#nm').textContent=O.nm||"Prime Burger's";
 let tab='pix';
 const wa=n=>{n=String(n||'').replace(/\D/g,'');return n&&!n.startsWith('55')?'55'+n:n};
