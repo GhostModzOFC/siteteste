@@ -1,47 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="robots" content="noindex"><meta name="theme-color" content="#14171a"><title>Prime Burger's</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex"><meta name="theme-color" content="#161116"><title>Prime Burger's</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f3f4f6;--card:#fff;--tx:#16191d;--mu:#667085;--bd:#e4e7ec;--ac:#d62d20;--ye:#ffb400;--ok:#12805c;--bad:#c0281c;--soft:#f7f8fa;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1113;--card:#171b1f;--tx:#eef0f2;--mu:#98a2ad;--bd:#293038;--soft:#1e2328;--ok:#34c48f;--bad:#ff6b5e}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:90px}
-header{background:linear-gradient(135deg,#14171a,#262b31);color:#fff;border-bottom:3px solid var(--ye);position:sticky;top:0;z-index:5}
-.w{max-width:560px;margin:0 auto;padding:0 14px}.hb{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-.hb b{font:700 22px Oswald,Impact,sans-serif;letter-spacing:.5px}.hb small{display:block;color:#b8bec6;font-size:12px}
-h2{font:700 20px Oswald,Impact,sans-serif;margin:18px 0 10px}
-.item{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
-.item .ic{font-size:32px;flex:0 0 auto}.item .info{flex:1;min-width:0}.item .info b{display:block;font-size:15px}
-.item .info span{color:var(--mu);font-size:12.5px;display:block;margin:2px 0 6px}.item .price{color:var(--ac);font-weight:700}
-.stepper{display:flex;align-items:center;gap:10px;flex:0 0 auto}
-.stepper button{width:32px;height:32px;border-radius:9px;border:1px solid var(--bd);background:var(--soft);color:var(--tx);font:700 18px Inter;cursor:pointer}
-.stepper button.add{background:var(--ac);border-color:var(--ac);color:#fff}
-.stepper span{min-width:16px;text-align:center;font-weight:700}
-.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));z-index:6}
+:root{--bg:#f6f4f1;--card:#fff;--tx:#1c1712;--mu:#7a7168;--bd:#eae5dd;--ac:#c8281f;--ac2:#e2432d;--ye:#f2b134;--ok:#137a53;--soft:#f9f6f2;--sh:0 10px 30px -12px rgba(28,23,18,.14);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#131110;--card:#1e1a17;--tx:#f3efe9;--mu:#a89e93;--bd:#332c26;--soft:#241f1b;--ok:#3fcf95;--sh:0 10px 30px -12px rgba(0,0,0,.5)}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:96px}
+header{background:radial-gradient(120% 160% at 0% 0%,#2a1d16,#161116 60%);color:#fff;position:sticky;top:0;z-index:5;box-shadow:0 2px 18px rgba(0,0,0,.25)}
+.w{max-width:560px;margin:0 auto;padding:0 16px}
+.hb{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+.brand{display:flex;align-items:center;gap:10px}.brand .ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--ac2),var(--ac));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 16px -4px rgba(200,40,31,.6)}
+.brand b{font:700 20px Oswald,Impact,sans-serif;letter-spacing:.2px;display:block}.brand small{color:#c9beb2;font-size:11.5px;letter-spacing:.3px}
+.cartpill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;color:#fff}
+h2{font:700 19px Oswald,Impact,sans-serif;margin:20px 0 10px;letter-spacing:.2px}
+.item{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:11px;display:flex;gap:13px;align-items:center;box-shadow:var(--sh)}
+.item .ic{font-size:30px;flex:0 0 auto;width:52px;height:52px;border-radius:14px;background:var(--soft);display:flex;align-items:center;justify-content:center}
+.item .info{flex:1;min-width:0}.item .info b{display:block;font-size:15px;font-weight:700}
+.item .info span{color:var(--mu);font-size:12.5px;display:block;margin:3px 0 7px;line-height:1.4}.item .price{color:var(--ac);font-weight:800;font-size:14.5px}
+.stepper{display:flex;align-items:center;gap:9px;flex:0 0 auto}
+.stepper button{width:32px;height:32px;border-radius:10px;border:1px solid var(--bd);background:var(--soft);color:var(--tx);font:700 18px Inter;cursor:pointer}
+.stepper button.add{background:linear-gradient(135deg,var(--ac2),var(--ac));border-color:var(--ac);color:#fff}
+.stepper span{min-width:16px;text-align:center;font-weight:800;font-size:14px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));z-index:6;box-shadow:0 -10px 24px -14px rgba(0,0,0,.18)}
 .bar .w{display:flex;align-items:center;gap:12px;padding:0}
-.bar .tot{flex:1}.bar .tot b{display:block;font:700 19px Oswald,sans-serif}.bar .tot span{color:var(--mu);font-size:12px}
-.btn{display:block;width:100%;text-align:center;text-decoration:none;background:linear-gradient(135deg,#e8402f,var(--ac));color:#fff;border:0;border-radius:14px;padding:15px;font:700 16px Inter,sans-serif;cursor:pointer;min-height:50px}
-.btn.g{background:var(--soft);color:var(--tx);border:1px solid var(--bd)}.btn.w{background:#128c4a}.btn:disabled{opacity:.55}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:12px}
-.row{display:flex;justify-content:space-between;gap:10px;padding:5px 0}.row.t{font:700 22px Oswald,sans-serif;border-top:1px solid var(--bd);margin-top:6px;padding-top:10px}.ok{color:var(--ok)}
-label{display:block;font-size:13px;color:var(--mu);font-weight:500;margin-bottom:8px}
-input{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:12px;padding:13px;font:inherit;width:100%;margin-top:4px}input:focus{outline:0;border-color:var(--ac)}
-.mu{color:var(--mu);font-size:13px}.ctr{text-align:center}.big{font-size:44px;text-align:center;margin-top:2px}.er{color:var(--bad);font-size:13.5px;min-height:18px;margin-top:6px}
-.badge{display:inline-block;font-size:11px;font-weight:700;background:#e6f6ee;color:var(--ok);border-radius:8px;padding:4px 9px;margin-bottom:10px}
-.back{display:inline-block;color:var(--mu);text-decoration:none;font-size:13px;margin-bottom:6px;cursor:pointer}
-.bigicon{font-size:54px;text-align:center}
+.bar .tot{flex:1}.bar .tot b{display:block;font:700 20px Oswald,sans-serif}.bar .tot span{color:var(--mu);font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
+.btn{display:block;width:100%;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--ac2),var(--ac));color:#fff;border:0;border-radius:14px;padding:15px;font:700 15.5px Inter,sans-serif;cursor:pointer;min-height:50px;box-shadow:0 10px 20px -8px rgba(200,40,31,.5)}
+.btn.g{background:var(--soft);color:var(--tx);border:1px solid var(--bd);box-shadow:none}.btn.w{background:linear-gradient(135deg,#17a463,#0f7a49);box-shadow:0 10px 20px -8px rgba(15,122,73,.45)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:var(--sh)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:14.5px}.row.t{font:700 21px Oswald,sans-serif;border-top:1px solid var(--bd);margin-top:8px;padding-top:12px}
+label{display:block;font-size:12.5px;color:var(--mu);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px}
+input{background:var(--soft);color:var(--tx);border:1px solid var(--bd);border-radius:13px;padding:13px;font:15px Inter;width:100%;margin-top:5px}input:focus{outline:0;border-color:var(--ac)}
+.mu{color:var(--mu);font-size:13px}.ctr{text-align:center}.er{color:var(--ac);font-size:13.5px;min-height:18px;margin-top:6px}
+.back{display:inline-flex;align-items:center;gap:5px;color:var(--mu);text-decoration:none;font-size:13px;margin-bottom:8px;cursor:pointer;font-weight:600}
+.steps{display:flex;align-items:center;justify-content:center;gap:6px;margin:4px 0 16px}
+.steps .dot{width:7px;height:7px;border-radius:50%;background:var(--bd)}.steps .dot.on{background:var(--ac);width:20px;border-radius:5px}
+.pixhead{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.pixhead .ic{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#2ecc8f,var(--ok));display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff}
+.pixhead b{font:700 16px Oswald,sans-serif}.pixhead span{display:block;color:var(--mu);font-size:12px}
+.amount{font:800 40px Oswald,sans-serif;text-align:center;margin:14px 0 4px;letter-spacing:.3px}
+.codebox{background:var(--soft);border:1px dashed var(--bd);border-radius:14px;padding:12px;margin:14px 0}
+.codebox textarea{width:100%;border:0;background:transparent;color:var(--tx);font:12.5px/1.55 ui-monospace,Menlo,Consolas,monospace;resize:none}
+.copybtn.done{background:linear-gradient(135deg,#2ecc8f,var(--ok))}
+.notice{background:#fff4e0;border:1px solid #f2d9a3;color:#7a5300;border-radius:13px;padding:12px 14px;font-size:13px;line-height:1.5;margin:12px 0}
+:root[data-theme=dark] .notice,body.dark .notice{background:#33280e;border-color:#4a3a13;color:#f2c96a}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;background:#e6f6ee;color:var(--ok);border-radius:999px;padding:5px 11px;margin-bottom:10px}
+:root[data-theme=dark] .badge,body.dark .badge{background:#0f2b21}
+.divider{text-align:center;color:var(--mu);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;margin:16px 0 8px}
+.foot{text-align:center;color:var(--mu);font-size:12px;margin-top:18px;line-height:1.6}
 </style></head><body>
-<header><div class="w"><div class="hb"><div><b>🍔 Prime Burger's</b><small>Peça e pague com verificação automática</small></div><div id="cartTag" class="mu" style="font-size:13px"></div></div></div></header>
+<header><div class="w"><div class="hb"><div class="brand"><div class="ic">🍔</div><div><b>Prime Burger's</b><small>Peça agora · pagamento via Pix</small></div></div><div class="cartpill" id="cartTag" style="display:none"></div></div></div></header>
 <main class="w" id="m"></main>
-<div class="bar" id="bar" style="display:none"><div class="w"><div class="tot"><span>Total</span><b id="barTot">R$ 0,00</b></div><div style="flex:1"><button class="btn" id="goCheckout" type="button">Finalizar pedido</button></div></div></div>
+<div class="bar" id="bar" style="display:none"><div class="w"><div class="tot"><span>Total do pedido</span><b id="barTot">R$ 0,00</b></div><div style="flex:1"><button class="btn" id="goCheckout" type="button">Finalizar pedido</button></div></div></div>
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),
-R=v=>(+v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),Q=new URLSearchParams(location.search);
+R=v=>(+v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
 /* ---- configuração da loja ---- */
-const STORE={nm:"Prime Burger's",wa:'34996982496',handle:'primeburgersmg'};
-const API='https://api.checkout.infinitepay.io';
+const STORE={nm:"Prime Burger's",wa:'34996982496',pix:'96e8723f-e70a-4c8e-87a6-b4a7903e7c58',mn:'Prime Burgers',mc:'Uberlandia'};
 const MENU=[
  {id:'xb',n:'X-Burger',d:'Pão, hambúrguer 120g, queijo, alface e tomate',p:18.9,e:'🍔'},
  {id:'xbc',n:'X-Bacon',d:'Pão, hambúrguer 120g, queijo, bacon crocante',p:22.9,e:'🥓'},
@@ -56,84 +72,72 @@ const cartTotal=()=>MENU.reduce((a,i)=>a+(cart[i.id]||0)*i.p,0);
 const wa=n=>{n=String(n||'').replace(/\D/g,'');return n&&!n.startsWith('55')?'55'+n:n};
 function setQty(id,d){cart[id]=Math.max(0,(cart[id]||0)+d);if(!cart[id])delete cart[id];renderMenu();renderBar()}
 
+/* ---- Pix Copia e Cola (BR Code / EMV) — gerado 100% no navegador ---- */
+function crc16(str){let crc=0xFFFF;for(let i=0;i<str.length;i++){crc^=(str.charCodeAt(i)<<8);for(let b=0;b<8;b++){crc=(crc&0x8000)?((crc<<1)^0x1021)&0xFFFF:(crc<<1)&0xFFFF}}return crc.toString(16).toUpperCase().padStart(4,'0')}
+const tlv=(id,v)=>id+String(v.length).padStart(2,'0')+v;
+function pixSan(s,max){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x20-\x7E]/g,'').toUpperCase().trim().slice(0,max)||'NA'}
+function buildPixCode(amount,txid){
+ let mai=tlv('00','br.gov.bcb.pix')+tlv('01',STORE.pix.trim());
+ let p=tlv('00','01')+tlv('01','11')+tlv('26',mai)+tlv('52','0000')+tlv('53','986')+tlv('54',amount.toFixed(2))+tlv('58','BR')+tlv('59',pixSan(STORE.mn,25))+tlv('60',pixSan(STORE.mc,15));
+ const tx=(String(txid||'').replace(/[^A-Za-z0-9]/g,'').slice(0,25))||'***';
+ p+=tlv('62',tlv('05',tx));p+='6304';return p+crc16(p)
+}
+
 function renderMenu(){
- $('#cartTag').textContent=cartCount()?cartCount()+' item(ns)':'';
- $('#m').innerHTML='<h2>Cardápio</h2>'+MENU.map(i=>`<div class="item"><div class="ic">${i.e}</div><div class="info"><b>${esc(i.n)}</b><span>${esc(i.d)}</span><span class="price">${R(i.p)}</span></div><div class="stepper">${cart[i.id]?`<button onclick="setQty('${i.id}',-1)">−</button><span>${cart[i.id]}</span>`:''}<button class="add" onclick="setQty('${i.id}',1)">+</button></div></div>`).join('');
- $('#bar').style.display=cartCount()?'flex':'none';
+ $('#cartTag').style.display=cartCount()?'block':'none';$('#cartTag').textContent=cartCount()+' item(ns)';
+ $('#m').innerHTML='<h2>Cardápio</h2>'+MENU.map(i=>`<div class="item"><div class="ic">${i.e}</div><div class="info"><b>${esc(i.n)}</b><span>${esc(i.d)}</span><span class="price">${R(i.p)}</span></div><div class="stepper">${cart[i.id]?`<button onclick="setQty('${i.id}',-1)">−</button><span>${cart[i.id]}</span>`:''}<button class="add" onclick="setQty('${i.id}',1)">+</button></div></div>`).join('')
+ +`<div class="foot">Todos os pagamentos são feitos via Pix, direto para a chave da loja.</div>`;
+ renderBar();
 }
 function renderBar(){$('#bar').style.display=cartCount()?'flex':'none';$('#barTot').textContent=R(cartTotal())}
-function backMenu(){renderMenu();renderBar()}
+function backMenu(){renderMenu()}
 function goCheckout(){if(!cartCount())return;renderCheckout()}
 
+function stepsHtml(n){return `<div class="steps">${[1,2,3].map(i=>`<span class="dot${i===n?' on':''}"></span>`).join('')}</div>`}
+
 function renderCheckout(){
- const total=cartTotal();
+ const total=cartTotal(),num=Date.now().toString(36).toUpperCase().slice(-6);
  const itemsHtml=MENU.filter(i=>cart[i.id]).map(i=>`<div class="row"><span>${cart[i.id]}× ${esc(i.n)}</span><span>${R(i.p*cart[i.id])}</span></div>`).join('');
- $('#m').innerHTML=`<a class="back" onclick="backMenu()">‹ Voltar ao cardápio</a><h2>Seu pedido</h2>
+ $('#m').innerHTML=`<a class="back" onclick="backMenu()">‹ Voltar ao cardápio</a>${stepsHtml(2)}
+ <h2>Confira seu pedido</h2>
  <div class="card">${itemsHtml}<div class="row t"><span>Total</span><span>${R(total)}</span></div></div>
- <div class="card"><label>Nome<input id="cn" placeholder="Seu nome"></label><label>WhatsApp (com DDD)<input id="cw" inputmode="tel" placeholder="34 99999-9999"></label></div>
- <div class="card ctr"><span class="badge">🔒 Pagamento com verificação automática · InfinitePay</span>
-  <p class="mu" style="margin:0">Pix ou cartão — você escolhe na próxima tela. Assim que pagar, voltamos pra cá e confirmamos sozinhos.</p>
-  <div class="big">${R(total)}</div>
-  <div class="er" id="ckErr"></div>
-  <button class="btn" id="payBtn" type="button">Pagar ${R(total)}</button>
+ <h2>Seus dados</h2>
+ <div class="card"><label>Nome</label><input id="cn" placeholder="Seu nome completo"><div style="height:12px"></div><label>WhatsApp</label><input id="cw" inputmode="tel" placeholder="34 99999-9999"></div>
+ <div class="er" id="ckErr"></div>
+ <button class="btn" id="toPay" type="button">Ir para o pagamento</button>`;
+ $('#bar').style.display='none';
+ $('#toPay').onclick=()=>{
+  const nm=$('#cn').value.trim(),ph=$('#cw').value.replace(/\D/g,'');
+  if(!nm||ph.length<10){$('#ckErr').textContent='Preencha seu nome e WhatsApp com DDD para continuar.';return}
+  renderPayment(total,num,nm,ph)
+ };
+}
+
+function renderPayment(total,num,nm,ph){
+ const code=buildPixCode(total,'PB'+num);
+ $('#m').innerHTML=`<a class="back" onclick="renderCheckout()">‹ Voltar</a>${stepsHtml(3)}
+ <div class="card">
+  <div class="pixhead"><div class="ic">💠</div><div><b>Pagamento via Pix</b><span>Pedido #${num} · ${esc(nm)}</span></div></div>
+  <span class="badge">🔒 Direto para a conta da loja</span>
+  <div class="amount">${R(total)}</div>
+  <p class="mu ctr" style="margin:0">Copie o código abaixo e cole na opção <b>Pix Copia e Cola</b> do app do seu banco.</p>
+  <div class="codebox"><textarea id="pixcode" rows="4" readonly onclick="this.select()">${code}</textarea></div>
+  <button class="btn copybtn" id="cpbtn" type="button">Copiar código Pix</button>
+  <div class="notice">📸 Depois de pagar, <b>envie o comprovante</b> para a loja pelo WhatsApp para confirmarmos e prepararmos seu pedido.</div>
+  ${STORE.wa?`<button class="btn w" id="wabtn" type="button">Enviar comprovante no WhatsApp</button>`:''}
+  <div class="divider">precisa de ajuda?</div>
+  ${STORE.wa?`<a class="btn g" target="_blank" rel="noopener" href="https://wa.me/${wa(STORE.wa)}">Falar com a loja</a>`:''}
  </div>`;
  $('#bar').style.display='none';
- $('#payBtn').onclick=pay;
+ $('#cpbtn').onclick=async()=>{const ta=$('#pixcode'),btn=$('#cpbtn');ta.select();
+  try{await navigator.clipboard.writeText(code)}catch(e){try{document.execCommand('copy')}catch(e2){}}
+  btn.textContent='Copiado! ✅';btn.classList.add('done');setTimeout(()=>{btn.textContent='Copiar código Pix';btn.classList.remove('done')},2200)};
+ if($('#wabtn'))$('#wabtn').onclick=()=>{
+  const msg='Olá, acabei de realizar o pedido, e irei enviar o comprovante logo em seguida!';
+  window.open(`https://wa.me/${wa(STORE.wa)}?text=${encodeURIComponent(msg)}`,'_blank')
+ };
 }
 
-async function pay(){
- const er=m=>{$('#ckErr').textContent=m},btn=$('#payBtn'),nm=$('#cn').value.trim(),ph=$('#cw').value.replace(/\D/g,'');
- if(!nm||ph.length<10)return er('Informe seu nome e WhatsApp com DDD.');
- const items=MENU.filter(i=>cart[i.id]).map(i=>({quantity:cart[i.id],price:Math.round(i.p*100),description:i.n})),
- total=cartTotal(),ns='PB'+Date.now().toString(36).toUpperCase(),ru=location.origin+location.pathname,
- body={handle:STORE.handle,order_nsu:ns,items,redirect_url:ru,customer:{name:nm,phone_number:'+'+wa(ph)}};
- btn.disabled=true;btn.textContent='Gerando pagamento seguro...';er('');
- let r,d;
- try{
-  r=await fetch(API+'/links',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
- }catch(networkErr){
-  btn.disabled=false;btn.textContent='Pagar '+R(total);
-  er('Falha de conexão ao chamar a InfinitePay (pode ser bloqueio de CORS ou sem internet). Detalhe: '+(networkErr.message||networkErr));
-  return;
- }
- try{d=await r.json()}catch(e){d={}}
- if(!r.ok){
-  btn.disabled=false;btn.textContent='Pagar '+R(total);
-  er('A InfinitePay recusou o pedido (HTTP '+r.status+'). '+(d.message||d.error||JSON.stringify(d).slice(0,200)||'Confira se o Checkout está ativado na sua conta e se a InfiniteTag "'+STORE.handle+'" está certa.'));
-  return;
- }
- let ok=false;try{const u=new URL(d.url);ok=u.protocol==='https:'&&/(^|\.)infinitepay\.(com\.br|io)$/.test(u.hostname)}catch(e){}
- if(!ok){
-  btn.disabled=false;btn.textContent='Pagar '+R(total);
-  er('A InfinitePay respondeu, mas sem um link de pagamento válido. Resposta: '+JSON.stringify(d).slice(0,200));
-  return;
- }
- try{localStorage.setItem('pbord_'+ns,JSON.stringify({nm,wa:ph,total,items,st:'aguardando',ts:Date.now()}))}catch(e){}
- btn.textContent='Abrindo pagamento...';location.href=d.url;
-}
-
-async function checkPayment(){
- const ns=Q.get('order_nsu'),tx=Q.get('transaction_nsu'),sl=Q.get('slug'),rc=Q.get('receipt_url'),cm=Q.get('capture_method');
- let rec={};try{rec=JSON.parse(localStorage.getItem('pbord_'+ns))||{}}catch(e){}
- $('#m').innerHTML=`<div class="card ctr"><div class="bigicon">⏳</div><b>Confirmando seu pagamento...</b><p class="mu">Estamos verificando direto com a InfinitePay, um instante.</p></div>`;
- $('#bar').style.display='none';
- let paid=null;
- try{
-  const r=await fetch(API+'/payment_check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({handle:STORE.handle,order_nsu:ns,transaction_nsu:tx,slug:sl})}),d=await r.json();
-  paid=d.paid===true?true:d.paid===false?false:null;
- }catch(e){}
- const how=cm==='pix'?'Pix':cm==='credit_card'?'cartão':'InfinitePay',rcOk=rc&&/^https:\/\//.test(rc),
- msg=`Olá! Meu nome é ${rec.nm||''}. Acabei de pagar meu pedido via ${how} (${R(rec.total||0)}) e o pagamento já foi confirmado automaticamente.${rcOk?' Comprovante: '+rc:''}`;
- if(rec.nm){rec.st=paid?'pago':(paid===false?'nao_confirmado':'a_conferir');try{localStorage.setItem('pbord_'+ns,JSON.stringify(rec))}catch(e){}}
- $('#m').innerHTML=`<div class="card ctr">
-  <div class="bigicon">${paid?'✅':paid===false?'❌':'🕒'}</div>
-  <h2 style="margin:6px 0">${paid?'Pagamento confirmado!':paid===false?'Pagamento não confirmado':'Ainda processando'}</h2>
-  <p class="mu">${paid?`Recebemos a confirmação automática do seu pagamento via ${how}. Sua loja já foi avisada e vai preparar o pedido.`:paid===false?'Não encontramos a confirmação desse pagamento. Se você já pagou, fale com a loja pelo WhatsApp.':'Ainda não conseguimos confirmar automaticamente. Se o pagamento foi concluído, isso pode levar alguns segundos — tente atualizar, ou fale com a loja.'}</p>
-  ${rcOk?`<a class="btn g" target="_blank" rel="noopener" href="${esc(rc)}">Ver comprovante</a>`:''}
-  ${STORE.wa&&paid?`<a class="btn w" target="_blank" rel="noopener" href="https://wa.me/${wa(STORE.wa)}?text=${encodeURIComponent(msg)}">Avisar a loja no WhatsApp</a>`:''}
-  <a class="btn g" href="${location.origin+location.pathname}">Fazer novo pedido</a>
- </div>`;
-}
-
-if(Q.get('order_nsu')&&Q.get('transaction_nsu')){checkPayment()}else{renderMenu();renderBar();$('#goCheckout').onclick=goCheckout}
+$('#goCheckout').onclick=goCheckout;
+renderMenu();
 </script></body></html>
