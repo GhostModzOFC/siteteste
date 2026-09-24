@@ -25,13 +25,13 @@ h2{font:700 19px Oswald,Impact,sans-serif;margin:20px 0 10px;letter-spacing:.2px
 .bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));z-index:6;box-shadow:0 -10px 24px -14px rgba(0,0,0,.18)}
 .bar .w{display:flex;align-items:center;gap:12px;padding:0}
 .bar .tot{flex:1}.bar .tot b{display:block;font:700 20px Oswald,sans-serif}.bar .tot span{color:var(--mu);font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
-.btn{display:block;width:100%;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--ac2),var(--ac));color:#fff;border:0;border-radius:14px;padding:15px;font:700 15.5px Inter,sans-serif;cursor:pointer;min-height:50px;box-shadow:0 10px 20px -8px rgba(200,40,31,.5)}
+.btn{display:block;width:100%;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--ac2),var(--ac));color:#fff;border:0;border-radius:14px;padding:15px;font:700 15.5px Inter,sans-serif;cursor:pointer;min-height:50px;box-shadow:0 10px 20px -8px rgba(200,40,31,.5);margin-top:10px}
 .btn.g{background:var(--soft);color:var(--tx);border:1px solid var(--bd);box-shadow:none}.btn.w{background:linear-gradient(135deg,#17a463,#0f7a49);box-shadow:0 10px 20px -8px rgba(15,122,73,.45)}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:var(--sh)}
 .row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:14.5px}.row.t{font:700 21px Oswald,sans-serif;border-top:1px solid var(--bd);margin-top:8px;padding-top:12px}
 label{display:block;font-size:12.5px;color:var(--mu);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px}
 input{background:var(--soft);color:var(--tx);border:1px solid var(--bd);border-radius:13px;padding:13px;font:15px Inter;width:100%;margin-top:5px}input:focus{outline:0;border-color:var(--ac)}
-.mu{color:var(--mu);font-size:13px}.ctr{text-align:center}.er{color:var(--ac);font-size:13.5px;min-height:18px;margin-top:6px}
+.mu{color:var(--mu);font-size:13px}.ctr{text-align:center}.er{color:var(--ac);font-size:13.5px;min-height:18px;margin:6px 0}
 .back{display:inline-flex;align-items:center;gap:5px;color:var(--mu);text-decoration:none;font-size:13px;margin-bottom:8px;cursor:pointer;font-weight:600}
 .steps{display:flex;align-items:center;justify-content:center;gap:6px;margin:4px 0 16px}
 .steps .dot{width:7px;height:7px;border-radius:50%;background:var(--bd)}.steps .dot.on{background:var(--ac);width:20px;border-radius:5px}
@@ -44,20 +44,26 @@ input{background:var(--soft);color:var(--tx);border:1px solid var(--bd);border-r
 .copybtn.done{background:linear-gradient(135deg,#2ecc8f,var(--ok))}
 .notice{background:#fff4e0;border:1px solid #f2d9a3;color:#7a5300;border-radius:13px;padding:12px 14px;font-size:13px;line-height:1.5;margin:12px 0}
 :root[data-theme=dark] .notice,body.dark .notice{background:#33280e;border-color:#4a3a13;color:#f2c96a}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .notice{background:#33280e;border-color:#4a3a13;color:#f2c96a}}
 .badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;background:#e6f6ee;color:var(--ok);border-radius:999px;padding:5px 11px;margin-bottom:10px}
 :root[data-theme=dark] .badge,body.dark .badge{background:#0f2b21}
 .divider{text-align:center;color:var(--mu);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;margin:16px 0 8px}
 .foot{text-align:center;color:var(--mu);font-size:12px;margin-top:18px;line-height:1.6}
+.spin{width:34px;height:34px;border:4px solid var(--bd);border-top-color:var(--ac);border-radius:50%;margin:18px auto;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation-duration:2.5s}}
 </style></head><body>
-<header><div class="w"><div class="hb"><div class="brand"><div class="ic">🍔</div><div><b>Prime Burger's</b><small>Peça agora · pagamento via Pix</small></div></div><div class="cartpill" id="cartTag" style="display:none"></div></div></div></header>
+<header><div class="w"><div class="hb"><div class="brand"><div class="ic">🍔</div><div><b>Prime Burger's</b><small>Peça agora · Pix ou cartão</small></div></div><div class="cartpill" id="cartTag" style="display:none"></div></div></div></header>
 <main class="w" id="m"></main>
-<div class="bar" id="bar" style="display:none"><div class="w"><div class="tot"><span>Total do pedido</span><b id="barTot">R$ 0,00</b></div><div style="flex:1"><button class="btn" id="goCheckout" type="button">Finalizar pedido</button></div></div></div>
+<div class="bar" id="bar" style="display:none"><div class="w"><div class="tot"><span>Total do pedido</span><b id="barTot">R$ 0,00</b></div><div style="flex:1"><button class="btn" id="goCheckout" type="button" style="margin-top:0">Finalizar pedido</button></div></div></div>
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),
 R=v=>(+v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
 /* ---- configuração da loja ---- */
-const STORE={nm:"Prime Burger's",wa:'34996982496',pix:'96e8723f-e70a-4c8e-87a6-b4a7903e7c58',mn:'Prime Burgers',mc:'Uberlandia'};
+const STORE={nm:"Prime Burger's",wa:'34996982496',
+ ih:'primeburgersmg', /* InfiniteTag (sem o $) */
+ api:'https://api.infinitepay.io/invoices/public/checkout',
+ pix:'96e8723f-e70a-4c8e-87a6-b4a7903e7c58',mn:'Prime Burgers',mc:'Uberlandia'}; /* Pix: só como plano B */
 const MENU=[
  {id:'xb',n:'X-Burger',d:'Pão, hambúrguer 120g, queijo, alface e tomate',p:18.9,e:'🍔'},
  {id:'xbc',n:'X-Bacon',d:'Pão, hambúrguer 120g, queijo, bacon crocante',p:22.9,e:'🥓'},
@@ -70,9 +76,10 @@ let cart={};
 const cartCount=()=>Object.values(cart).reduce((a,q)=>a+q,0);
 const cartTotal=()=>MENU.reduce((a,i)=>a+(cart[i.id]||0)*i.p,0);
 const wa=n=>{n=String(n||'').replace(/\D/g,'');return n&&!n.startsWith('55')?'55'+n:n};
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
 function setQty(id,d){cart[id]=Math.max(0,(cart[id]||0)+d);if(!cart[id])delete cart[id];renderMenu();renderBar()}
 
-/* ---- Pix Copia e Cola (BR Code / EMV) — gerado 100% no navegador ---- */
+/* ---- Pix Copia e Cola (plano B, caso o checkout não abra) ---- */
 function crc16(str){let crc=0xFFFF;for(let i=0;i<str.length;i++){crc^=(str.charCodeAt(i)<<8);for(let b=0;b<8;b++){crc=(crc&0x8000)?((crc<<1)^0x1021)&0xFFFF:(crc<<1)&0xFFFF}}return crc.toString(16).toUpperCase().padStart(4,'0')}
 const tlv=(id,v)=>id+String(v.length).padStart(2,'0')+v;
 function pixSan(s,max){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x20-\x7E]/g,'').toUpperCase().trim().slice(0,max)||'NA'}
@@ -83,16 +90,31 @@ function buildPixCode(amount,txid){
  p+=tlv('62',tlv('05',tx));p+='6304';return p+crc16(p)
 }
 
+/* ---- InfinitePay: criar link e conferir pagamento ---- */
+async function createLink(nsu,nm,ph){
+ const items=MENU.filter(i=>cart[i.id]).map(i=>({quantity:cart[i.id],price:Math.round(i.p*100),description:i.n}));
+ const body={handle:STORE.ih,order_nsu:nsu,redirect_url:location.href.split(/[?#]/)[0],items,customer:{name:nm,phone_number:'+'+wa(ph)}};
+ const r=await fetch(STORE.api+'/links',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ if(!r.ok)throw new Error('HTTP '+r.status);
+ const d=await r.json(),u=d.url||d.link||d.checkout_url;
+ if(!u)throw new Error('Resposta sem link');
+ return u
+}
+async function checkPayment(q){
+ const r=await fetch(STORE.api+'/payment_check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({handle:STORE.ih,order_nsu:q.order_nsu,transaction_nsu:q.transaction_nsu,slug:q.slug})});
+ if(!r.ok)throw new Error('HTTP '+r.status);
+ return r.json()
+}
+
 function renderMenu(){
  $('#cartTag').style.display=cartCount()?'block':'none';$('#cartTag').textContent=cartCount()+' item(ns)';
  $('#m').innerHTML='<h2>Cardápio</h2>'+MENU.map(i=>`<div class="item"><div class="ic">${i.e}</div><div class="info"><b>${esc(i.n)}</b><span>${esc(i.d)}</span><span class="price">${R(i.p)}</span></div><div class="stepper">${cart[i.id]?`<button onclick="setQty('${i.id}',-1)">−</button><span>${cart[i.id]}</span>`:''}<button class="add" onclick="setQty('${i.id}',1)">+</button></div></div>`).join('')
- +`<div class="foot">Todos os pagamentos são feitos via Pix, direto para a chave da loja.</div>`;
+ +`<div class="foot">Pague com Pix ou cartão em um checkout seguro da InfinitePay.</div>`;
  renderBar();
 }
 function renderBar(){$('#bar').style.display=cartCount()?'flex':'none';$('#barTot').textContent=R(cartTotal())}
 function backMenu(){renderMenu()}
 function goCheckout(){if(!cartCount())return;renderCheckout()}
-
 function stepsHtml(n){return `<div class="steps">${[1,2,3].map(i=>`<span class="dot${i===n?' on':''}"></span>`).join('')}</div>`}
 
 function renderCheckout(){
@@ -113,31 +135,68 @@ function renderCheckout(){
  };
 }
 
-function renderPayment(total,num,nm,ph){
+async function renderPayment(total,num,nm,ph){
+ const nsu='PB-'+num;
+ $('#m').innerHTML=`${stepsHtml(3)}<div class="card ctr"><div class="spin"></div><b>Gerando seu link de pagamento…</b><p class="mu">Pedido #${num} · ${R(total)}</p></div>`;
+ try{
+  const url=await createLink(nsu,nm,ph);
+  store.set('pb_order',{nsu,total,nm,ph});
+  $('#m').innerHTML=`${stepsHtml(3)}<div class="card ctr"><div class="pixhead" style="justify-content:center"><div class="ic">💳</div><div style="text-align:left"><b>Pagamento seguro</b><span>Pedido #${num} · ${esc(nm)}</span></div></div><div class="amount">${R(total)}</div><p class="mu">Abrindo o checkout. Se nada acontecer, toque no botão.</p><a class="btn" href="${esc(url)}">Pagar agora</a></div>`;
+  location.href=url
+ }catch(e){renderPix(total,num,nm,ph)}
+}
+
+function renderPix(total,num,nm,ph){
  const code=buildPixCode(total,'PB'+num);
  $('#m').innerHTML=`<a class="back" onclick="renderCheckout()">‹ Voltar</a>${stepsHtml(3)}
  <div class="card">
+  <div class="notice" style="margin-top:0">⚠️ Não foi possível abrir o checkout agora. Pague com o Pix abaixo ou tente novamente.</div>
   <div class="pixhead"><div class="ic">💠</div><div><b>Pagamento via Pix</b><span>Pedido #${num} · ${esc(nm)}</span></div></div>
-  <span class="badge">🔒 Direto para a conta da loja</span>
   <div class="amount">${R(total)}</div>
-  <p class="mu ctr" style="margin:0">Copie o código abaixo e cole na opção <b>Pix Copia e Cola</b> do app do seu banco.</p>
+  <p class="mu ctr" style="margin:0">Copie o código e cole em <b>Pix Copia e Cola</b> no app do seu banco.</p>
   <div class="codebox"><textarea id="pixcode" rows="4" readonly onclick="this.select()">${code}</textarea></div>
   <button class="btn copybtn" id="cpbtn" type="button">Copiar código Pix</button>
-  <div class="notice">📸 Depois de pagar, <b>envie o comprovante</b> para a loja pelo WhatsApp para confirmarmos e prepararmos seu pedido.</div>
-  ${STORE.wa?`<button class="btn w" id="wabtn" type="button">Enviar comprovante no WhatsApp</button>`:''}
-  <div class="divider">precisa de ajuda?</div>
-  ${STORE.wa?`<a class="btn g" target="_blank" rel="noopener" href="https://wa.me/${wa(STORE.wa)}">Falar com a loja</a>`:''}
+  <div class="notice">📸 Depois de pagar, <b>envie o comprovante</b> para a loja pelo WhatsApp.</div>
+  <button class="btn w" id="wabtn" type="button">Enviar comprovante no WhatsApp</button>
+  <button class="btn g" id="retry" type="button">Tentar o checkout de novo</button>
  </div>`;
  $('#bar').style.display='none';
+ $('#retry').onclick=()=>renderPayment(total,num,nm,ph);
  $('#cpbtn').onclick=async()=>{const ta=$('#pixcode'),btn=$('#cpbtn');ta.select();
   try{await navigator.clipboard.writeText(code)}catch(e){try{document.execCommand('copy')}catch(e2){}}
   btn.textContent='Copiado! ✅';btn.classList.add('done');setTimeout(()=>{btn.textContent='Copiar código Pix';btn.classList.remove('done')},2200)};
- if($('#wabtn'))$('#wabtn').onclick=()=>{
-  const msg='Olá, acabei de realizar o pedido, e irei enviar o comprovante logo em seguida!';
-  window.open(`https://wa.me/${wa(STORE.wa)}?text=${encodeURIComponent(msg)}`,'_blank')
- };
+ $('#wabtn').onclick=()=>window.open(`https://wa.me/${wa(STORE.wa)}?text=${encodeURIComponent('Olá, acabei de realizar o pedido #'+num+', e irei enviar o comprovante logo em seguida!')}`,'_blank')
+}
+
+/* ---- volta do checkout: confere o pagamento ---- */
+async function renderReturn(q){
+ const pend=store.get('pb_order')||{};
+ $('#bar').style.display='none';
+ $('#m').innerHTML=`<div class="card ctr"><div class="spin"></div><b>Confirmando seu pagamento…</b></div>`;
+ try{
+  const d=await checkPayment(q);
+  if(d.paid){
+   const val=(d.paid_amount||d.amount||0)/100,how=d.capture_method==='pix'?'Pix':d.capture_method==='credit_card'?'Cartão de crédito':(d.capture_method||'');
+   store.del('pb_order');cart={};
+   const msg=`Olá! Meu pedido ${q.order_nsu} foi pago (${R(val)}${how?' via '+how:''}).${q.receipt_url?' Comprovante: '+q.receipt_url:''}`;
+   $('#m').innerHTML=`<div class="card ctr"><div style="font-size:46px">✅</div><h2 style="margin:6px 0">Pagamento confirmado!</h2><p class="mu">Pedido ${esc(q.order_nsu)}${pend.nm?' · '+esc(pend.nm):''}</p><div class="amount">${R(val)}</div><p class="mu">${esc(how)}</p>
+   <button class="btn w" id="wabtn" type="button">Avisar a loja no WhatsApp</button>
+   ${q.receipt_url&&/^https:\/\//.test(q.receipt_url)?`<a class="btn g" target="_blank" rel="noopener" href="${esc(q.receipt_url)}">Ver comprovante</a>`:''}
+   <button class="btn g" id="again" type="button">Fazer novo pedido</button></div>`;
+   $('#wabtn').onclick=()=>window.open(`https://wa.me/${wa(STORE.wa)}?text=${encodeURIComponent(msg)}`,'_blank');
+   $('#again').onclick=()=>{history.replaceState(null,'',location.href.split(/[?#]/)[0]);renderMenu()};
+  }else{
+   $('#m').innerHTML=`<div class="card ctr"><div style="font-size:46px">⏳</div><h2 style="margin:6px 0">Pagamento ainda não confirmado</h2><p class="mu">Se você já pagou, aguarde alguns segundos e confira de novo.</p><button class="btn" id="rc" type="button">Conferir de novo</button><button class="btn g" id="again" type="button">Voltar ao cardápio</button></div>`;
+   $('#rc').onclick=()=>renderReturn(q);
+   $('#again').onclick=()=>{history.replaceState(null,'',location.href.split(/[?#]/)[0]);renderMenu()};
+  }
+ }catch(e){
+  $('#m').innerHTML=`<div class="card ctr"><h2 style="margin:6px 0">Não foi possível conferir agora</h2><p class="mu">Fale com a loja informando o pedido ${esc(q.order_nsu)}.</p><button class="btn" id="rc" type="button">Tentar de novo</button><a class="btn g" target="_blank" rel="noopener" href="https://wa.me/${wa(STORE.wa)}?text=${encodeURIComponent('Olá, fiz o pedido '+q.order_nsu+' e preciso de ajuda para confirmar o pagamento.')}">Falar com a loja</a></div>`;
+  $('#rc').onclick=()=>renderReturn(q)
+ }
 }
 
 $('#goCheckout').onclick=goCheckout;
-renderMenu();
+const qp=Object.fromEntries(new URLSearchParams(location.search));
+if(qp.order_nsu&&qp.transaction_nsu)renderReturn(qp);else renderMenu();
 </script></body></html>
